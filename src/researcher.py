@@ -48,7 +48,14 @@ def _llm_summarize(repo: dict, readme: str, config) -> str:
         timeout=60,
     )
     resp.raise_for_status()
-    return resp.json()["choices"][0]["message"]["content"].strip()
+    data = resp.json()
+    choices = data.get("choices", [])
+    if not choices:
+        raise ValueError(f"LLM 返回空 choices，响应: {str(data)[:300]}")
+    content = choices[0].get("message", {}).get("content", "")
+    if not content or not content.strip():
+        raise ValueError("LLM 返回内容为空")
+    return content.strip()
 
 
 def _meta_block(repo: dict) -> str:

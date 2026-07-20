@@ -34,7 +34,12 @@ def main():
         config.LLM_ENABLED = False
 
     print(f"[1/5] 采集近 {config.DAYS_BACK} 天新晋高 star 项目 ...")
-    candidates = github_client.search_recent_stars(config)
+    try:
+        candidates = github_client.search_recent_stars(config)
+    except github_client.RateLimitError as e:
+        print(f"[错误] {e}")
+        print("请在 .env 配置 GITHUB_TOKEN 后重试。")
+        sys.exit(2)
     candidates = [r for r in candidates if not github_client.should_exclude(r, config)]
     print(f"      候选 {len(candidates)} 个（已过滤列表/教程类）")
 

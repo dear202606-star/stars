@@ -38,9 +38,9 @@ def search_recent_stars(config) -> list:
         resp = requests.get(f"{config.GITHUB_API_BASE}/search/repositories",
                             headers=headers, params=params, timeout=30)
         if resp.status_code == 403:
-            # 速率限制
-            raise RuntimeError(
-                f"GitHub API 速率限制，请在 config/.env 配置 GITHUB_TOKEN。"
+            # 速率限制（与 fetch_readme 保持一致的异常类型）
+            raise RateLimitError(
+                f"GitHub Search API 速率限制，请在 .env 配置 GITHUB_TOKEN。"
                 f"响应: {resp.text[:200]}")
         resp.raise_for_status()
         items = resp.json().get("items", [])
@@ -69,7 +69,9 @@ def fetch_readme(owner_repo: str, config, max_chars: int = 4000) -> str:
         return text[:max_chars]
     except RateLimitError:
         raise
-    except Exception:
+    except Exception as e:
+        # 记录失败原因，便于排查（不再静默吞掉所有异常）
+        print(f"      [警告] 获取 README 失败: {type(e).__name__}: {e}")
         return ""
 
 

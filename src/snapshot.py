@@ -2,12 +2,15 @@
 
 import os
 import sqlite3
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 
 def get_conn(db_path: str) -> sqlite3.Connection:
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    # timeout: 等待锁 30 秒；WAL 模式：读写不互斥；busy_timeout: 忙等待
+    conn = sqlite3.connect(db_path, timeout=30)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=30000")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS recommended (
             full_name TEXT PRIMARY KEY,
@@ -34,7 +37,7 @@ def mark_recommended(conn: sqlite3.Connection, repo: dict,
         "(full_name, repo_id, stars, language, recommended_at, article_date) "
         "VALUES (?,?,?,?,?,?)",
         (repo["full_name"], repo.get("id"), repo.get("stargazers_count"),
-         repo.get("language"), datetime.utcnow().isoformat(),
+         repo.get("language"), datetime.now(timezone.utc).isoformat(),
          article_date or date.today().isoformat())
     )
     conn.commit()
