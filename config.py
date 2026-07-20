@@ -14,7 +14,13 @@ def _load_env():
             if not line or line.startswith("#") or "=" not in line:
                 continue
             k, v = line.split("=", 1)
-            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+            key = k.strip()
+            val = v.strip().strip('"').strip("'")
+            # .env 中的非空值优先（覆盖系统环境变量中的空值）
+            if val:
+                os.environ[key] = val
+            elif key not in os.environ:
+                os.environ[key] = val
 
 _load_env()
 
