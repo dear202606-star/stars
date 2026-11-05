@@ -1,18 +1,18 @@
 {
   "site": "两仪",
   "tagline": "一边算得清，一边算不尽。",
-  "updated_at": "2026-11-06 07:06",
+  "updated_at": "2026-11-06 07:11",
   "latest": "2026-11-05",
   "categories": [
     {
       "key": "finance",
       "label": "金融与量化",
-      "min_stars": 500
+      "display": "数"
     },
     {
       "key": "daoshu",
       "label": "道术 · 玄学术数",
-      "min_stars": 5
+      "display": "象"
     }
   ],
   "per_category": 3,
