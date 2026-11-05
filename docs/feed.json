@@ -1,6 +1,7 @@
 {
-  "site": "GitHub 双榜 · 金融与道术",
-  "updated_at": "2026-11-05 22:36",
+  "site": "两仪",
+  "tagline": "一边算得清，一边算不尽。",
+  "updated_at": "2026-11-06 07:06",
   "latest": "2026-11-05",
   "categories": [
     {
@@ -18,7 +19,7 @@
   "posts": [
     {
       "date": "2026-11-05",
-      "title": "GitHub 双榜 · 金融与道术（2026-11-05）",
+      "title": "两仪 · 2026-11-05",
       "count": 6,
       "md": "posts/2026-11-05.md",
       "html": "posts/2026-11-05.html"

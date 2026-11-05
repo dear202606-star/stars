@@ -33,8 +33,8 @@ a:hover{text-decoration-color:var(--accent)}
  padding:12px 18px;z-index:60;border:1px solid var(--line-2)}
 .skip:focus{left:16px;top:16px}
 .mono,.num,.metric,.stat-v,.eyebrow,.tag,.jump,.live,.facts,.archive,.tools,
-.rank-head span,.stat-note,.pager,.score,.cat-idx,.cat-meta,.method,
-.score-total,.method dt{font-family:var(--font-m);font-variant-numeric:tabular-nums}
+.rank-head span,.stat-note,.pager,.cat-idx,.cat-meta,
+.score-total,.score-u{font-family:var(--font-m);font-variant-numeric:tabular-nums}
 
 /* 顶栏：细线 + 期数锚点 + 状态点 */
 .topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
@@ -96,25 +96,14 @@ h1 em{font-style:normal;color:var(--accent)}
 .cat-meta{font-size:.7rem;color:var(--muted);white-space:nowrap}
 .cat .list{margin-top:6px}
 
-/* 质量分：四项分项常驻，依据可在「项目详情」里展开复核 */
-.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;
+/* 分数与一句人话的依据并排，不列指标、不写口径 */
+.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;
  margin:0 0 20px;padding:12px 0;border-top:1px solid var(--line);
- border-bottom:1px solid var(--line);font-size:.74rem;color:var(--muted);
- min-width:0;overflow-wrap:anywhere}
-.score-label{letter-spacing:.14em;text-transform:uppercase}
-.score-total{font-size:1.1rem;font-weight:600;color:var(--accent);
- letter-spacing:-.03em}
-.score-item b{color:var(--ink);font-weight:500}
-.score-full{flex-basis:100%;font-size:.72rem;line-height:1.7;color:var(--muted)}
-.method{margin:clamp(38px,6vw,72px) 0 0;padding:26px 0 0;
- border-top:1px solid var(--ink);font-size:.78rem;line-height:1.85;color:var(--muted)}
-.method h2{font-family:var(--font-d);font-size:1.02rem;font-weight:600;
- margin:0 0 12px;color:var(--ink)}
-.method dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);
- gap:6px 20px}
-.method dt{color:var(--ink);white-space:nowrap}
-.method dd{margin:0;min-width:0;overflow-wrap:anywhere}
-.method p{margin:12px 0 0}
+ border-bottom:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.score-total{font-size:1.35rem;font-weight:600;color:var(--accent);
+ letter-spacing:-.04em;line-height:1}
+.score-u{font-family:var(--font-m);font-size:.72rem;color:var(--muted)}
+.score-note{font-size:.84rem;line-height:1.7;color:var(--muted)}
 
 /* 榜单：细线分隔，条目带相对收藏数条形 */
 .rank-head{display:flex;justify-content:space-between;align-items:baseline;
@@ -219,13 +208,12 @@ footer{padding:26px 0 54px;border-top:1px solid var(--line);
  .entry-head{gap:8px}
  .section{grid-template-columns:1fr;gap:5px;padding:12px 0}
  .section h4{padding-top:0}
- .score{gap:6px 12px;font-size:.7rem}
- .score-total{font-size:1rem}
+ .score{gap:6px 10px}
+ .score-total{font-size:1.15rem}
+ .score-note{font-size:.8rem}
  .cat-head{grid-template-columns:1fr;gap:6px}
  .cat-meta{grid-column:1;white-space:normal}
  .cat{scroll-margin-top:72px}
- .method dl{grid-template-columns:1fr;gap:2px}
- .method dt{margin-top:8px;white-space:normal}
  .pager a{flex:1 1 100%;justify-content:center}
  .tools{flex-wrap:wrap}
  .tools a{display:inline-flex;align-items:center;min-height:44px}
