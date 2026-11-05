@@ -90,9 +90,11 @@ jobs:
           if git diff --staged --quiet; then
             echo "本次无内容变更，跳过提交。"
           else
+            # 提交信息用文章日期（北京时间），与 UTC 日期可能差一天
+            DATE=$(python -c "import json;print(json.load(open('data/history.json'))['posts'][0]['date'])")
             git -c user.name="github-actions[bot]" \
                 -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-                commit -m "chore: 两仪 · 每日一页 $(date -u +%F)"
+                commit -m "chore: 两仪 · 每日一页 $DATE"
             git push
           fi
 
