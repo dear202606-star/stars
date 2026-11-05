@@ -236,16 +236,18 @@ class TestSite(unittest.TestCase):
 
     def test_archive_excludes_current(self):
         h = {"recommended": {}, "posts": [
-            {"date": "2026-11-05", "title": "本期", "count": 10,
+            {"date": "2026-11-05", "title": "两仪 · 2026-11-05", "count": 10,
              "md": "a.md", "html": "a.html"},
-            {"date": "2026-11-04", "title": "往期", "count": 10,
+            {"date": "2026-11-04", "title": "两仪 · 2026-11-04", "count": 10,
              "md": "b.md", "html": "b.html"},
         ]}
         block = site._archive_block(h, "2026-11-05")
-        self.assertNotIn("本期", block)
-        self.assertIn("往期", block)
+        self.assertNotIn("2026-11-05", block)
+        self.assertIn("2026-11-04", block)
         self.assertIn("posts/2026-11-04.html", block)
         self.assertIn("<nav", block)
+        # 标题里已含日期，不再重复「日期 · 标题」
+        self.assertNotIn("2026-11-04 · 两仪", block)
 
     def test_overview_placeholder_when_empty(self):
         """没有题记时留白，不塞占位说明文字。"""

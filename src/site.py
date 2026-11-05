@@ -431,7 +431,7 @@ def _archive_block(history: dict, current_date: str) -> str:
         return ""
     items = "".join(
         f'<li><a href="posts/{_esc(p["date"])}.html">'
-        f'<span>{_esc(p.get("date", ""))} · {_esc(p.get("title") or "往期文章")}</span>'
+        f'<span>{_esc(p.get("title") or p.get("date") or "往期")}</span>'
         f'<span class="cnt">{p.get("count", "?")} 则</span></a></li>'
         for p in posts[:60]
     )
