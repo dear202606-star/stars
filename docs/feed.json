@@ -1,12 +1,25 @@
 {
-  "site": "GitHub 新晋热门速览",
-  "updated_at": "2026-11-05 21:49",
+  "site": "GitHub 双榜 · 金融与道术",
+  "updated_at": "2026-11-05 22:36",
   "latest": "2026-11-05",
+  "categories": [
+    {
+      "key": "finance",
+      "label": "金融与量化",
+      "min_stars": 500
+    },
+    {
+      "key": "daoshu",
+      "label": "道术 · 玄学术数",
+      "min_stars": 5
+    }
+  ],
+  "per_category": 3,
   "posts": [
     {
       "date": "2026-11-05",
-      "title": "GitHub 本周新晋热门 Top10（2026-11-05）",
-      "count": 10,
+      "title": "GitHub 双榜 · 金融与道术（2026-11-05）",
+      "count": 6,
       "md": "posts/2026-11-05.md",
       "html": "posts/2026-11-05.html"
     }

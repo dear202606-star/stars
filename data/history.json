@@ -4,86 +4,147 @@
       "stars": 19225,
       "language": "TypeScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:28:14.251607+08:00"
+      "updated_at": "2026-11-05T21:28:14.251607+08:00",
+      "category": "legacy"
     },
     "storytold/craft-anything": {
       "stars": 13944,
       "language": "Rust",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:28:14.251607+08:00"
+      "updated_at": "2026-11-05T21:28:14.251607+08:00",
+      "category": "legacy"
     },
     "patch-gg/pixelfx": {
       "stars": 5109,
       "language": "JavaScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:28:14.251607+08:00"
+      "updated_at": "2026-11-05T21:28:14.251607+08:00",
+      "category": "legacy"
     },
     "KKKKhazix/agent-autoloop": {
       "stars": 3079,
       "language": "TypeScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "Verlintas/NOIR": {
       "stars": 2367,
       "language": "Kotlin",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "elvarofficial/teardown": {
       "stars": 2065,
       "language": "JavaScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "caru-ini/stack-diagram": {
       "stars": 1828,
       "language": "TypeScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "govijr/terminal-mac": {
       "stars": 1804,
       "language": "Swift",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto": {
       "stars": 1704,
       "language": "Python",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "mromidev/claude-animated-shorts": {
       "stars": 1640,
       "language": "TypeScript",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "Arjun-Ingole/hop": {
       "stars": 1518,
       "language": "PowerShell",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "zortos293/Lichii": {
       "stars": 1472,
       "language": "C++",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
     },
     "kevinraymond/florilegium": {
       "stars": 1435,
       "language": "TeX",
       "first_seen": "2026-11-05",
-      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+      "updated_at": "2026-11-05T21:49:54.108049+08:00",
+      "category": "legacy"
+    },
+    "openbq-org/OpenBB": {
+      "stars": 75116,
+      "language": "Python",
+      "category": "finance",
+      "quality_score": 100.0,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
+    },
+    "JerBouma/FinanceToolkit": {
+      "stars": 5497,
+      "language": "Python",
+      "category": "finance",
+      "quality_score": 97.4,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
+    },
+    "hosseinmoein/DataFrame": {
+      "stars": 2998,
+      "language": "C++",
+      "category": "finance",
+      "quality_score": 94.8,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
+    },
+    "Renhuai123/ziwei-doushu": {
+      "stars": 16129,
+      "language": "TypeScript",
+      "category": "daoshu",
+      "quality_score": 94.0,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
+    },
+    "SylarLong/iztro": {
+      "stars": 4349,
+      "language": "TypeScript",
+      "category": "daoshu",
+      "quality_score": 90.4,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
+    },
+    "6tail/lunar-javascript": {
+      "stars": 1736,
+      "language": "JavaScript",
+      "category": "daoshu",
+      "quality_score": 86.4,
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T22:36:42.579426+08:00"
     }
   },
   "posts": [
     {
       "date": "2026-11-05",
-      "title": "GitHub 本周新晋热门 Top10（2026-11-05）",
-      "count": 10,
+      "title": "GitHub 双榜 · 金融与道术（2026-11-05）",
+      "count": 6,
       "md": "posts/2026-11-05.md",
       "html": "posts/2026-11-05.html"
     }
@@ -91,10 +152,222 @@
   "day_selection": {
     "2026-11-05": [
       {
-        "full_name": "KKKKhazix/agent-autoloop",
-        "html_url": "https://github.com/KKKKhazix/agent-autoloop",
-        "stargazers_count": 3079,
-        "forks_count": 581,
+        "full_name": "openbq-org/OpenBB",
+        "html_url": "https://github.com/openbq-org/OpenBB",
+        "stargazers_count": 75116,
+        "forks_count": 7847,
+        "language": "Python",
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null,
+          "node_id": "MDc6TGljZW5zZTA="
+        },
+        "topics": [
+          "ai",
+          "crypto",
+          "derivatives",
+          "economics",
+          "equity",
+          "finance",
+          "fixed-income",
+          "machine-learning",
+          "openbb",
+          "options",
+          "python",
+          "quantitative-finance",
+          "stocks"
+        ],
+        "description": "Open Data Platform for analysts, quants and AI agents.",
+        "homepage": "https://openbb.co",
+        "created_at": "2020-12-20T10:46:38Z",
+        "pushed_at": "2026-11-02T04:58:10Z",
+        "open_issues_count": 104,
+        "id": 323048702,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 100.0,
+          "parts": {
+            "stars": {
+              "score": 40.0,
+              "max": 40,
+              "value": 75116
+            },
+            "ratio": {
+              "score": 20.0,
+              "max": 20,
+              "value": 9.6,
+              "grade": "关注与使用比例健康"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 3,
+              "note": "3 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、Other 许可、13 个标签、有主页"
+            }
+          },
+          "evidence": "累计 75,116 收藏（40.0/40）；收藏/复制比 9.6，关注与使用比例健康（20.0/20）；3 天前更新（25.0/25）；有简介、Other 许可、13 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "JerBouma/FinanceToolkit",
+        "html_url": "https://github.com/JerBouma/FinanceToolkit",
+        "stargazers_count": 5497,
+        "forks_count": 645,
+        "language": "Python",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "algorithmic-trading",
+          "equities",
+          "factor-analysis",
+          "finance",
+          "financial-analysis",
+          "financial-data",
+          "financial-statements",
+          "fundamental-analysis",
+          "fundamentals",
+          "market-data",
+          "mcp-server",
+          "performance-analysis",
+          "python",
+          "quantitative-analysis",
+          "quantitative-finance",
+          "risk-management",
+          "sector-analysis",
+          "stock-data",
+          "technical-analysis",
+          "valuation"
+        ],
+        "description": "Transparent and Efficient Financial Analysis",
+        "homepage": "https://www.jeroenbouma.com/projects/financetoolkit",
+        "created_at": "2019-04-08T11:44:25Z",
+        "pushed_at": "2026-11-05T06:47:31Z",
+        "open_issues_count": 0,
+        "id": 180137089,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 97.4,
+          "parts": {
+            "stars": {
+              "score": 37.4,
+              "max": 40,
+              "value": 5497
+            },
+            "ratio": {
+              "score": 20.0,
+              "max": 20,
+              "value": 8.5,
+              "grade": "关注与使用比例健康"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、20 个标签、有主页"
+            }
+          },
+          "evidence": "累计 5,497 收藏（37.4/40）；收藏/复制比 8.5，关注与使用比例健康（20.0/20）；0 天前更新（25.0/25）；有简介、MIT License 许可、20 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "hosseinmoein/DataFrame",
+        "html_url": "https://github.com/hosseinmoein/DataFrame",
+        "stargazers_count": 2998,
+        "forks_count": 363,
+        "language": "C++",
+        "license": {
+          "key": "bsd-3-clause",
+          "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+          "spdx_id": "BSD-3-Clause",
+          "url": "https://api.github.com/licenses/bsd-3-clause",
+          "node_id": "MDc6TGljZW5zZTU="
+        },
+        "topics": [
+          "ai",
+          "cpp",
+          "data-analysis",
+          "data-science",
+          "dataframe",
+          "financial-data-analysis",
+          "financial-engineering",
+          "large-data",
+          "machine-learning",
+          "multidimensional-data",
+          "numerical-analysis",
+          "statistical",
+          "statistical-analysis",
+          "tensor",
+          "tensorboard",
+          "trading-algorithms",
+          "trading-strategies"
+        ],
+        "description": "C++ DataFrame for statistical, financial, and ML analysis in modern C++",
+        "homepage": "https://hosseinmoein.github.io/DataFrame/",
+        "created_at": "2017-10-28T17:25:45Z",
+        "pushed_at": "2026-11-02T16:39:14Z",
+        "open_issues_count": 0,
+        "id": 108669343,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 94.8,
+          "parts": {
+            "stars": {
+              "score": 34.8,
+              "max": 40,
+              "value": 2998
+            },
+            "ratio": {
+              "score": 20.0,
+              "max": 20,
+              "value": 8.3,
+              "grade": "关注与使用比例健康"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 2,
+              "note": "2 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、BSD 3-Clause \"New\" or \"Revised\" License 许可、17 个标签、有主页"
+            }
+          },
+          "evidence": "累计 2,998 收藏（34.8/40）；收藏/复制比 8.3，关注与使用比例健康（20.0/20）；2 天前更新（25.0/25）；有简介、BSD 3-Clause \"New\" or \"Revised\" License 许可、17 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "Renhuai123/ziwei-doushu",
+        "html_url": "https://github.com/Renhuai123/ziwei-doushu",
+        "stargazers_count": 16129,
+        "forks_count": 3127,
         "language": "TypeScript",
         "license": {
           "key": "mit",
@@ -104,30 +377,62 @@
           "node_id": "MDc6TGljZW5zZTEz"
         },
         "topics": [
-          "ai-agents",
-          "automation",
-          "claude-code",
-          "cli",
-          "codex",
-          "event-driven",
-          "mcp",
-          "nodejs",
-          "self-hosted",
+          "bazi",
+          "chinese-astrology",
+          "divination",
+          "fortune-telling",
+          "nextjs",
+          "open-source",
+          "purple-star-astrology",
           "typescript",
-          "workflow"
+          "zi-wei-dou-shu",
+          "ziwei-doushu"
         ],
-        "description": "让你的命令行 Agent 在后台自己接活、自己跟进到底；平时不烦你，遇到拿不准的事才发卡片找你拍板。",
-        "created_at": "2026-11-03T08:02:11Z",
-        "pushed_at": "2026-11-05T12:39:59Z",
-        "open_issues_count": 3,
-        "id": 1443985070
+        "description": "紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据",
+        "homepage": "https://ouranic.cn/?from=gh-about",
+        "created_at": "2026-05-01T05:09:59Z",
+        "pushed_at": "2026-11-03T07:39:11Z",
+        "open_issues_count": 6,
+        "id": 1226205410,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 94.0,
+          "parts": {
+            "stars": {
+              "score": 40.0,
+              "max": 40,
+              "value": 16129
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 5.2,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 2,
+              "note": "2 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、10 个标签、有主页"
+            }
+          },
+          "evidence": "累计 16,129 收藏（40.0/40）；收藏/复制比 5.2，关注与使用接近（14.0/20）；2 天前更新（25.0/25）；有简介、MIT License 许可、10 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
       },
       {
-        "full_name": "Verlintas/NOIR",
-        "html_url": "https://github.com/Verlintas/NOIR",
-        "stargazers_count": 2367,
-        "forks_count": 213,
-        "language": "Kotlin",
+        "full_name": "SylarLong/iztro",
+        "html_url": "https://github.com/SylarLong/iztro",
+        "stargazers_count": 4349,
+        "forks_count": 702,
+        "language": "TypeScript",
         "license": {
           "key": "mit",
           "name": "MIT License",
@@ -136,38 +441,60 @@
           "node_id": "MDc6TGljZW5zZTEz"
         },
         "topics": [
-          "adb",
-          "android",
-          "android-privacy",
-          "android-security",
-          "android-tools",
-          "apk-analysis",
-          "bloatware",
-          "cli",
-          "cross-platform",
-          "debloat",
-          "jadx",
-          "kotlin",
-          "kotlin-multiplatform",
-          "privacy",
-          "privacy-tools",
-          "security-audit",
-          "static-analysis",
-          "telemetry",
-          "terminal-ui",
-          "tui"
+          "astrolabe",
+          "astrology",
+          "chinese-astrology",
+          "horoscope",
+          "iztro",
+          "natal-chart",
+          "typescript",
+          "ziwei",
+          "ziweidoushu"
         ],
-        "description": "手机隐私审计：用 adb 扫出 Android 应用的权限、上报端点与数据流向，并给出可回滚的处置。Desktop Android leak audit: permissions, endpoints, data flows, reversible fixes.",
-        "created_at": "2026-10-31T21:34:39Z",
-        "pushed_at": "2026-11-05T09:57:51Z",
-        "open_issues_count": 0,
-        "id": 1441272552
+        "description": "⭐This is a lightweight kit for generating astrolabes for Zi Wei Dou Shu (The Purple Star Astrology), an ancient Chinese astrology. It allows you to obtain your horoscope and personality analysis. 支持多语言轻量级获取紫微斗数排盘信息的javascript开源库。",
+        "homepage": "https://iztro.com",
+        "created_at": "2023-07-27T08:41:40Z",
+        "pushed_at": "2026-11-02T16:24:10Z",
+        "open_issues_count": 4,
+        "id": 671405519,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 90.4,
+          "parts": {
+            "stars": {
+              "score": 36.4,
+              "max": 40,
+              "value": 4349
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 6.2,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 2,
+              "note": "2 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、9 个标签、有主页"
+            }
+          },
+          "evidence": "累计 4,349 收藏（36.4/40）；收藏/复制比 6.2，关注与使用接近（14.0/20）；2 天前更新（25.0/25）；有简介、MIT License 许可、9 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
       },
       {
-        "full_name": "elvarofficial/teardown",
-        "html_url": "https://github.com/elvarofficial/teardown",
-        "stargazers_count": 2065,
-        "forks_count": 321,
+        "full_name": "6tail/lunar-javascript",
+        "html_url": "https://github.com/6tail/lunar-javascript",
+        "stargazers_count": 1736,
+        "forks_count": 301,
         "language": "JavaScript",
         "license": {
           "key": "mit",
@@ -176,173 +503,49 @@
           "url": "https://api.github.com/licenses/mit",
           "node_id": "MDc6TGljZW5zZTEz"
         },
-        "topics": [],
-        "description": "A Claude Code skill that turns any machine into a 3D simulator you can take apart",
-        "created_at": "2026-10-30T09:29:01Z",
-        "pushed_at": "2026-10-31T14:01:06Z",
-        "open_issues_count": 9,
-        "id": 1439522537
-      },
-      {
-        "full_name": "caru-ini/stack-diagram",
-        "html_url": "https://github.com/caru-ini/stack-diagram",
-        "stargazers_count": 1828,
-        "forks_count": 86,
-        "language": "TypeScript",
-        "license": {
-          "key": "mit",
-          "name": "MIT License",
-          "spdx_id": "MIT",
-          "url": "https://api.github.com/licenses/mit",
-          "node_id": "MDc6TGljZW5zZTEz"
-        },
         "topics": [
-          "agent-skills",
-          "architecture-diagram",
-          "claude-code",
-          "claude-skills",
-          "codex",
-          "diagram",
-          "system-architecture",
-          "tech-stack"
+          "calendar",
+          "javascript",
+          "lunar"
         ],
-        "description": "Agent skill: describe your stack in a sentence, get an architecture diagram with official logos",
-        "created_at": "2026-11-01T05:35:12Z",
-        "pushed_at": "2026-11-03T03:42:46Z",
-        "open_issues_count": 0,
-        "id": 1441517767
-      },
-      {
-        "full_name": "govijr/terminal-mac",
-        "html_url": "https://github.com/govijr/terminal-mac",
-        "stargazers_count": 1804,
-        "forks_count": 110,
-        "language": "Swift",
-        "license": {
-          "key": "mit",
-          "name": "MIT License",
-          "spdx_id": "MIT",
-          "url": "https://api.github.com/licenses/mit",
-          "node_id": "MDc6TGljZW5zZTEz"
+        "description": "日历、公历(阳历)、农历(阴历、老黄历)、佛历、道历，支持节假日、星座、儒略日、干支、生肖、节气、节日、彭祖百忌、每日宜忌、吉神宜趋凶煞宜忌、吉神(喜神/福神/财神/阳贵神/阴贵神)方位、胎神方位、冲煞、纳音、星宿、八字、五行、十神、建除十二值星、青龙名堂等十二神、黄道黑道日及吉凶等。lunar is a calendar library for Solar and Chinese Lunar.",
+        "homepage": "https://6tail.cn/calendar/api.html",
+        "created_at": "2018-06-23T09:22:41Z",
+        "pushed_at": "2026-11-05T11:06:24Z",
+        "open_issues_count": 41,
+        "id": 138388152,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 86.4,
+          "parts": {
+            "stars": {
+              "score": 32.4,
+              "max": 40,
+              "value": 1736
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 5.8,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、3 个标签、有主页"
+            }
+          },
+          "evidence": "累计 1,736 收藏（32.4/40）；收藏/复制比 5.8，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、MIT License 许可、3 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
         },
-        "topics": [
-          "cli",
-          "gui",
-          "macos",
-          "shell",
-          "swift",
-          "terminal",
-          "tui"
-        ],
-        "description": "Entire MacOS running in your terminal.",
-        "created_at": "2026-11-03T03:22:56Z",
-        "pushed_at": "2026-11-05T12:21:59Z",
-        "open_issues_count": 3,
-        "id": 1443759946
-      },
-      {
-        "full_name": "worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto",
-        "html_url": "https://github.com/worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto",
-        "stargazers_count": 1704,
-        "forks_count": 798,
-        "language": "Python",
-        "license": null,
-        "topics": [],
-        "description": "Google_AI_Pro_2Year_ZeroCost_Auto",
-        "created_at": "2026-11-04T14:54:56Z",
-        "pushed_at": "2026-11-04T14:57:03Z",
-        "open_issues_count": 14,
-        "id": 1445802355
-      },
-      {
-        "full_name": "mromidev/claude-animated-shorts",
-        "html_url": "https://github.com/mromidev/claude-animated-shorts",
-        "stargazers_count": 1640,
-        "forks_count": 368,
-        "language": "TypeScript",
-        "license": {
-          "key": "mit",
-          "name": "MIT License",
-          "spdx_id": "MIT",
-          "url": "https://api.github.com/licenses/mit",
-          "node_id": "MDc6TGljZW5zZTEz"
-        },
-        "topics": [],
-        "description": "Free Claude skill: viral animated story shorts (2D characters in a 3D world) with three.js + Remotion",
-        "created_at": "2026-11-01T05:50:38Z",
-        "pushed_at": "2026-11-01T05:57:14Z",
-        "open_issues_count": 5,
-        "id": 1441526188
-      },
-      {
-        "full_name": "Arjun-Ingole/hop",
-        "html_url": "https://github.com/Arjun-Ingole/hop",
-        "stargazers_count": 1518,
-        "forks_count": 53,
-        "language": "PowerShell",
-        "license": {
-          "key": "mit",
-          "name": "MIT License",
-          "spdx_id": "MIT",
-          "url": "https://api.github.com/licenses/mit",
-          "node_id": "MDc6TGljZW5zZTEz"
-        },
-        "topics": [],
-        "description": "Install Linux next to Windows without a USB stick",
-        "created_at": "2026-10-30T19:40:45Z",
-        "pushed_at": "2026-11-03T01:08:16Z",
-        "open_issues_count": 9,
-        "id": 1440160468
-      },
-      {
-        "full_name": "zortos293/Lichii",
-        "html_url": "https://github.com/zortos293/Lichii",
-        "stargazers_count": 1472,
-        "forks_count": 196,
-        "language": "C++",
-        "license": {
-          "key": "gpl-3.0",
-          "name": "GNU General Public License v3.0",
-          "spdx_id": "GPL-3.0",
-          "url": "https://api.github.com/licenses/gpl-3.0",
-          "node_id": "MDc6TGljZW5zZTk="
-        },
-        "topics": [],
-        "description": "VERY experimental Nintendo Switch 2 emulator",
-        "created_at": "2026-10-31T14:17:26Z",
-        "pushed_at": "2026-11-05T13:44:08Z",
-        "open_issues_count": 42,
-        "id": 1440927503
-      },
-      {
-        "full_name": "kevinraymond/florilegium",
-        "html_url": "https://github.com/kevinraymond/florilegium",
-        "stargazers_count": 1435,
-        "forks_count": 40,
-        "language": "TeX",
-        "license": {
-          "key": "mit",
-          "name": "MIT License",
-          "spdx_id": "MIT",
-          "url": "https://api.github.com/licenses/mit",
-          "node_id": "MDc6TGljZW5zZTEz"
-        },
-        "topics": [
-          "generative-art",
-          "latex",
-          "latex-package",
-          "lua",
-          "lualatex",
-          "postscript",
-          "procedural-generation",
-          "svg",
-          "typography"
-        ],
-        "description": "Procedurally generated Delft-blue floral page margins for LuaLaTeX, drawn in Lua",
-        "created_at": "2026-10-30T07:49:05Z",
-        "pushed_at": "2026-11-04T15:21:22Z",
-        "open_issues_count": 1,
-        "id": 1439430391
+        "archived": false
       }
     ]
   }
