@@ -1,0 +1,128 @@
+name: 每日 GitHub 新晋热门 Top10
+
+on:
+  schedule:
+    # GitHub Actions cron 使用 UTC；01:07 UTC = 北京 09:07。
+    # 避开整点可降低排队延迟，保证"及时"。
+    - cron: '7 1 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '文章日期 YYYY-MM-DD（留空=今天）'
+        required: false
+        default: ''
+      top:
+        description: 'Top N（留空=10）'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-stars-daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 单元测试（前置快速失败）
+        run: python -m unittest discover -s tests -v
+
+      - name: 检查配置
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "::warning::未配置 Secret LLM_API_KEY，本次将以模板模式生成（无 AI 简介）。"
+          else
+            echo "LLM 已配置。"
+          fi
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "::warning::未配置 Supabase Secrets，本次跳过持久化。"
+          else
+            echo "Supabase 持久化已配置。"
+          fi
+
+      - name: 采集 + 生成文章 + 生成站点 + 持久化
+        env:
+          # 内置 GITHUB_TOKEN 每次运行自动注入、永不过期，无需维护 PAT
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: https://api.deepseek.com/v1
+          LLM_MODEL: deepseek-chat
+          TZ_OFFSET_HOURS: '8'
+          # Supabase 持久化：全部来自 Secrets，无本地依赖
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_REQUIRED: '1'
+          SITE_BASE_URL: https://dear202606-star.github.io/stars
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.date }}" ]; then ARGS="$ARGS --date ${{ github.event.inputs.date }}"; fi
+          if [ -n "${{ github.event.inputs.top }}" ]; then ARGS="$ARGS --top ${{ github.event.inputs.top }}"; fi
+          python run.py $ARGS
+
+      - name: 提交文章与站点
+        # 用 -c 临时身份，不修改仓库 git 配置
+        run: |
+          git add docs data/history.json
+          if git diff --staged --quiet; then
+            echo "本次无内容变更，跳过提交。"
+          else
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore: 每日 Top10 自动生成 $(date -u +%F)"
+            git push
+          fi
+
+      - name: Pages 可用性提示
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VISIBILITY=$(gh api repos/${{ github.repository }} --jq .visibility)
+          if [ "$VISIBILITY" != "public" ]; then
+            echo "::warning::仓库当前为 $VISIBILITY，免费计划不支持私有仓库的 GitHub Pages。文章、站点文件与 Supabase 持久化均已正常生成；如需公开网页，请把仓库设为 Public（或升级计划）。"
+            echo "skip_pages=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip_pages=false" >> "$GITHUB_OUTPUT"
+          fi
+        id: pages_check
+
+      - name: 上传 Pages 产物
+        if: steps.pages_check.outputs.skip_pages == 'false'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+      - name: 部署 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

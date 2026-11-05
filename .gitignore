@@ -3,6 +3,12 @@ __pycache__/
 .venv/
 venv/
 .env
-data/
 output/
 .codebuddy/
+
+# data/ 里只有 history.json 需要随仓库持久化（跨次去重），其余忽略
+data/*
+!data/history.json
+
+# docs/ 是 GitHub Pages 站点，必须提交
+!docs/
