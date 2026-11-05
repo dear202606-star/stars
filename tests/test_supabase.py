@@ -13,8 +13,8 @@ class TestParseSections(unittest.TestCase):
         s = supabase_store.parse_sections(SUMMARY)
         self.assertEqual(list(s.keys()),
                          ["这是什么", "能做什么", "上手难不难",
-                          "谁最适合用", "为什么火"])
-        self.assertIn("整理资料", s["这是什么"])
+                          "谁最适合用", "为什么值得关注"])
+        self.assertIn("资料整理", s["这是什么"])
 
     def test_parse_tolerates_inline_label(self):
         s = supabase_store.parse_sections("**这是什么**：一个工具\n**能做什么**\n- 归拢文件")

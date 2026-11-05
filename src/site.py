@@ -1,7 +1,11 @@
 """静态站点生成器：把每期文章渲染成 GitHub Pages 可用的 HTML。
 
-设计目标：读者是「不太懂技术的普通人」。
-先给人话简介，技术细节默认收进 <details>；符合 WCAG 2.1 AA。
+设计语言：编辑部式科技榜单（Editorial Terminal）
+- Zinc/Off-Black 中性底 + 单一青柠强调色，无霓虹、无紫蓝、无 emoji
+- 等宽字体承载所有数字与元信息；非对称 Hero；细线分隔替代卡片堆叠
+- 真实数据可视化（收藏数相对条形），不编造任何指标
+- 动效只使用 transform / opacity，尊重 prefers-reduced-motion
+- 读者是不懂技术的普通人：人话简介在前，技术细节折叠在后
 """
 
 import html
@@ -10,70 +14,190 @@ import os
 import re
 from datetime import datetime, timedelta, timezone
 
-CSS = """
-:root{color-scheme:light dark;--bg:#f6f7f9;--card:#fff;--text:#1f2328;--muted:#59636e;
---line:#d8dee4;--accent:#0550ae;--accent-soft:#ddf4ff;--star:#9a6700;
---shadow:0 1px 3px rgba(31,35,40,.08)}
-@media(prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#161b22;--text:#e6edf3;
---muted:#9198a1;--line:#30363d;--accent:#79c0ff;--accent-soft:#122d4a;--star:#e3b341;
---shadow:0 1px 3px rgba(0,0,0,.4)}}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-line-height:1.8;font-size:1rem;-webkit-font-smoothing:antialiased}
-a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
-a:hover{text-decoration-thickness:2px}
-a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
-.skip{position:absolute;left:-9999px;top:0;background:var(--card);padding:10px 16px;z-index:10}
-.skip:focus{left:12px;top:12px}
-.wrap{max-width:820px;margin:0 auto;padding:0 18px}
-header.hero{padding:40px 0 26px;border-bottom:1px solid var(--line);margin-bottom:26px}
-.brand{font-size:.875rem;letter-spacing:.08em;color:var(--accent);font-weight:700}
-h1{font-size:1.875rem;line-height:1.35;margin:12px 0 10px;letter-spacing:-.02em;
-overflow-wrap:anywhere}
-.promise{font-size:1rem;font-weight:600;margin:0 0 6px}
-.meta{color:var(--muted);font-size:.875rem;margin:0}
-.overview{margin-top:20px;background:var(--accent-soft);border-left:4px solid var(--accent);
-padding:14px 18px;border-radius:0 10px 10px 0;font-size:1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
-padding:22px 24px;margin:0 0 18px;box-shadow:var(--shadow)}
-.card h2{font-size:1.25rem;margin:0 0 4px;overflow-wrap:anywhere}
-.card h2 .rank{color:var(--muted);font-weight:600;margin-right:8px}
-.stars{color:var(--star);font-size:.9375rem;font-weight:700;white-space:nowrap}
-.section{margin:16px 0 0}
-.section h3{display:inline-block;font-size:.875rem;font-weight:700;color:var(--accent);
-background:var(--accent-soft);padding:2px 12px;border-radius:20px;margin:0 0 6px}
-.section p{margin:0 0 8px}
-.section ul{margin:0;padding-left:22px}.section li{margin:4px 0}
-details.tech{margin-top:18px;border-top:1px dashed var(--line);padding-top:10px}
-details.tech summary{cursor:pointer;color:var(--muted);font-size:.875rem;padding:6px 0;
-list-style:none;display:block;min-height:24px}
+CSS = r"""
+:root{
+  color-scheme:light dark;
+  --bg:#F6F7F5;--surface:#FFFFFF;--ink:#16191D;--muted:#5C646D;
+  --line:#DFE3DF;--line-2:#C6CCC6;--accent:#4F621C;--accent-soft:#EDF2DC;
+  --grid:rgba(22,25,29,.032);
+  --font-d:"Outfit","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-m:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0B0E11;--surface:#11151A;--ink:#EBEEF0;--muted:#8B939C;
+    --line:#22272E;--line-2:#3A424B;--accent:#BED857;--accent-soft:#191F12;
+    --grid:rgba(255,255,255,.018);
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-d);
+ font-size:1rem;line-height:1.75;letter-spacing:.005em;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+ linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+ background-size:52px 52px}
+.shell{position:relative;z-index:1;max-width:1180px;margin:0 auto;
+ padding:0 clamp(20px,5vw,60px)}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line-2);
+ text-underline-offset:4px;text-decoration-thickness:1px}
+a:hover{text-decoration-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--surface);
+ padding:12px 18px;z-index:60;border:1px solid var(--line-2)}
+.skip:focus{left:16px;top:16px}
+.mono,.num,.metric,.stat-v,.eyebrow,.tag,.jump,.live,.facts,.archive,.tools,
+.rank-head span,.stat-note,.pager{font-family:var(--font-m);font-variant-numeric:tabular-nums}
+
+/* 顶栏：细线 + 期数锚点 + 状态点 */
+.topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+ background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px)}
+.topbar-inner{display:grid;grid-template-columns:auto 1fr auto;gap:24px;
+ align-items:center;min-height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--font-m);
+ font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+ text-decoration:none;font-weight:600}
+.brand::before{content:"";width:9px;height:9px;background:var(--accent);
+ transform:rotate(45deg);display:block}
+.jump{display:flex;gap:clamp(8px,1.4vw,18px);justify-content:center;
+ font-size:.72rem;letter-spacing:.06em;overflow-x:auto;scrollbar-width:none}
+.jump::-webkit-scrollbar{display:none}
+.jump a{color:var(--muted);text-decoration:none;padding:8px 2px}
+.jump a:hover,.jump a[aria-current="true"]{color:var(--accent)}
+.live{font-size:.7rem;letter-spacing:.12em;color:var(--muted);white-space:nowrap}
+.live i{display:inline-block;width:6px;height:6px;border-radius:50%;
+ background:var(--accent);margin-right:9px;vertical-align:middle;
+ animation:pulse 2.6s var(--ease) infinite}
+
+/* Hero：非对称双栏，右侧为真实统计 */
+.hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(220px,.72fr);
+ gap:clamp(30px,5.5vw,80px);align-items:end;
+ padding:clamp(46px,7vw,94px) 0 clamp(38px,5vw,68px)}
+.eyebrow{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+ color:var(--muted);margin:0 0 22px}
+h1{font-size:clamp(2.25rem,5.6vw,4.35rem);line-height:1.04;
+ letter-spacing:-.048em;font-weight:600;margin:0 0 22px;overflow-wrap:anywhere}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(1rem,1.45vw,1.15rem);line-height:1.72;
+ color:var(--muted);max-width:52ch;margin:0 0 30px}
+.overview{border-left:2px solid var(--accent);padding:2px 0 2px 20px;
+ max-width:62ch;font-size:.97rem;line-height:1.75}
+.overview-label{display:block;font-family:var(--font-m);font-size:.68rem;
+ letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.stats{border-top:1px solid var(--line-2)}
+.stat{display:grid;grid-template-columns:1fr auto;align-items:baseline;
+ padding:13px 0;border-bottom:1px solid var(--line)}
+.stat-k{font-size:.82rem;color:var(--muted)}
+.stat-v{font-size:clamp(1.35rem,2.2vw,1.8rem);font-weight:600;letter-spacing:-.04em}
+.stat-u{font-size:.76rem;color:var(--muted);margin-left:7px}
+.stat-note{font-size:.72rem;color:var(--muted);margin:14px 0 0;line-height:1.6}
+
+/* 榜单：细线分隔，条目带相对收藏数条形 */
+.rank-head{display:flex;justify-content:space-between;align-items:baseline;
+ gap:16px;border-bottom:1px solid var(--ink);padding-bottom:14px}
+.rank-head h2{font-size:1.02rem;font-weight:600;letter-spacing:.01em;margin:0}
+.rank-head span{font-size:.7rem;color:var(--muted);letter-spacing:.1em}
+.list{list-style:none;margin:0;padding:0}
+.entry{display:grid;grid-template-columns:clamp(62px,7vw,104px) minmax(0,1fr);
+ gap:clamp(18px,3vw,44px);padding:clamp(32px,4.4vw,54px) 0;
+ border-bottom:1px solid var(--line);
+ animation:rise .55s var(--ease) both;
+ animation-delay:calc(var(--i,0) * 55ms)}
+.entry-rail{display:flex;flex-direction:column;gap:20px;padding-top:4px}
+.num{font-size:clamp(1.7rem,3.2vw,2.75rem);font-weight:500;
+ letter-spacing:-.09em;line-height:1;color:var(--line-2);
+ transition:color .3s var(--ease)}
+.entry:hover .num,.entry:focus-within .num{color:var(--accent)}
+.bar{height:2px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);
+ transform-origin:left;animation:grow 1s var(--ease) both;
+ animation-delay:calc(var(--i,0) * 55ms + 200ms)}
+.entry-head{display:flex;justify-content:space-between;align-items:baseline;
+ gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.entry-head h3{font-size:clamp(1.15rem,2.1vw,1.6rem);font-weight:600;
+ letter-spacing:-.035em;margin:0;overflow-wrap:anywhere}
+.entry-head h3 a{text-decoration-color:var(--line)}
+.metric{white-space:nowrap;font-size:.9rem}
+.metric-v{font-size:1.05rem;font-weight:600;color:var(--accent)}
+.metric-u{font-size:.72rem;color:var(--muted);margin-left:8px}
+
+/* 五字段：标签列 + 内容列，不用胶囊 */
+.summary{display:grid}
+.section{display:grid;grid-template-columns:clamp(92px,11vw,142px) minmax(0,1fr);
+ gap:clamp(14px,2vw,30px);padding:13px 0;border-top:1px solid var(--line)}
+.section:first-child{border-top:0;padding-top:0}
+.section h4{margin:0;padding-top:3px;font-family:var(--font-m);font-size:.7rem;
+ font-weight:500;letter-spacing:.14em;color:var(--muted)}
+.section p{margin:0;line-height:1.75}
+.section ul{margin:0;padding-left:1.15em}
+.section li{margin:4px 0}
+details.tech{margin-top:20px;border-top:1px dashed var(--line);padding-top:10px}
+details.tech summary{cursor:pointer;list-style:none;display:flex;align-items:center;
+ gap:10px;min-height:44px;font-family:var(--font-m);font-size:.72rem;
+ letter-spacing:.08em;color:var(--muted)}
 details.tech summary::-webkit-details-marker{display:none}
-details.tech summary::before{content:"▸ ";color:var(--accent)}
-details.tech[open] summary::before{content:"▾ "}
-.facts{list-style:none;padding:0;margin:8px 0 0;font-size:.875rem;color:var(--muted)}
-.facts li{margin:6px 0;overflow-wrap:anywhere}
-.facts a{display:inline-block;padding:4px 0}
-.archive{margin:36px 0 20px;padding-top:24px;border-top:1px solid var(--line)}
-.archive h2{font-size:1.1875rem;margin:0 0 12px}
-.archive ul{list-style:none;padding:0}
-.archive li{padding:0;border-bottom:1px dashed var(--line);font-size:.9375rem}
-.archive a{display:block;padding:11px 0}
-.archive .cnt{color:var(--muted);font-size:.875rem}
-.pager{display:flex;justify-content:space-between;gap:12px;margin:24px 0;flex-wrap:wrap}
-.pager a{display:block;padding:10px 14px;border:1px solid var(--line);border-radius:10px;
-background:var(--card);min-height:44px}
-footer{padding:28px 0 44px;color:var(--muted);font-size:.875rem;text-align:center}
-.tools{margin-top:12px;font-size:.8125rem}
-.back{display:inline-block;margin:22px 0;font-size:.9375rem}
-@media(max-width:600px){h1{font-size:1.5rem}.card{padding:18px}.wrap{padding:0 14px}
-header.hero{padding:28px 0 20px}.meta,.facts{font-size:.9375rem}}
-@media(max-width:380px){.pager{flex-direction:column}.stars{display:block;margin-top:4px}}
+details.tech summary::before{content:"";width:6px;height:6px;
+ border-right:1px solid var(--accent);border-bottom:1px solid var(--accent);
+ transform:rotate(45deg);transition:transform .25s var(--ease)}
+details.tech[open] summary::before{transform:rotate(225deg)}
+.facts{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:7px;
+ font-size:.82rem;color:var(--muted)}
+.facts li{overflow-wrap:anywhere}
+.facts a{display:inline-flex;align-items:center;min-height:44px}
+
+/* 导航与归档 */
+.pager{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+ margin:clamp(28px,4vw,48px) 0;font-size:.8rem}
+.pager a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;
+ border:1px solid var(--line-2);text-decoration:none}
+.pager a:hover{border-color:var(--accent);color:var(--accent)}
+.archive{margin:0 0 clamp(40px,6vw,72px);padding-top:26px;
+ border-top:1px solid var(--line)}
+.archive h2{font-family:var(--font-d);font-size:1.02rem;font-weight:600;margin:0 0 12px}
+.archive ul{list-style:none;margin:0;padding:0}
+.archive li{border-bottom:1px solid var(--line)}
+.archive a{display:flex;justify-content:space-between;gap:16px;
+ align-items:center;min-height:44px;padding:10px 0;
+ font-size:.82rem;text-decoration:none}
+.archive a:hover{color:var(--accent)}
+.archive .cnt{font-size:.74rem;color:var(--muted);white-space:nowrap}
+.back{display:inline-block;margin:24px 0 0;font-family:var(--font-m);
+ font-size:.78rem;min-height:44px;line-height:44px}
+footer{padding:26px 0 54px;border-top:1px solid var(--line);
+ font-size:.78rem;color:var(--muted);display:flex;
+ justify-content:space-between;gap:16px;flex-wrap:wrap}
+.tools{font-size:.72rem;display:flex;gap:18px}
+.placeholder{max-width:60ch;padding:clamp(48px,7vw,96px) 0}
+
+@keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(var(--pct,1))}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+
+@media(max-width:880px){
+ .hero{grid-template-columns:1fr;gap:34px;align-items:start}
+ .jump{display:none}
+ .topbar-inner{grid-template-columns:auto 1fr}
+}
+@media(max-width:640px){
+ .entry{grid-template-columns:1fr;gap:14px}
+ .entry-rail{flex-direction:row;align-items:center;gap:16px;padding-top:0}
+ .bar{flex:1}
+ .section{grid-template-columns:1fr;gap:5px;padding:12px 0}
+ .section h4{padding-top:0}
+ h1{font-size:clamp(2rem,9vw,2.7rem)}
+ .overview{font-size:.93rem}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;
+ scroll-behavior:auto!important}
+ .bar i{transform:scaleX(var(--pct,1))}
+}
 """
 
 
-def _esc(s: str) -> str:
+def _esc(s) -> str:
     return html.escape(str(s), quote=True)
 
 
@@ -94,7 +218,7 @@ _ITEM_RE = re.compile(r"^\s*(?:[-*]|\d+[.、)]|[一二三四五六七八九十]+
 
 
 def render_summary(summary: str) -> str:
-    """把 LLM 简介渲染成带 h3 小标题的语义化 HTML（读屏可在项目内导航）。"""
+    """把 LLM 简介渲染成带 h4 小标题的语义化 HTML。"""
     out, buf, label = [], [], None
 
     def flush():
@@ -103,8 +227,7 @@ def render_summary(summary: str) -> str:
         if not lines:
             buf = []
             return
-        body = []
-        paras, lists = [], []
+        body, paras, lists = [], [], []
         for line in lines:
             m = _ITEM_RE.match(line)
             (lists if m else paras).append(m.group(1) if m else line)
@@ -114,7 +237,7 @@ def render_summary(summary: str) -> str:
             body.append("<ul>" + "".join(f"<li>{_inline(t)}</li>" for t in lists) + "</ul>")
         if body:
             out.append('<section class="section">'
-                       + (f'<h3 class="label">{_esc(label)}</h3>' if label else "")
+                       + (f'<h4>{_esc(label)}</h4>' if label else "")
                        + "".join(body) + "</section>")
         buf, label = [], None
 
@@ -124,7 +247,7 @@ def render_summary(summary: str) -> str:
             flush()
             continue
         if line.strip().startswith(">"):
-            continue  # 忽略降级提示 / README 节选
+            continue
         m = _LABEL_RE.match(line)
         if m:
             flush()
@@ -138,11 +261,8 @@ def render_summary(summary: str) -> str:
     return "".join(out)
 
 
-def _stars(n: int) -> str:
-    return f'<span class="stars"><span aria-hidden="true">⭐</span> {n:,} 人收藏</span>'
-
-
-def _render_card(idx: int, repo: dict, summary: str) -> str:
+def _render_card(idx: int, repo: dict, summary: str, max_stars: int = 1) -> str:
+    """渲染一个榜单条目（保留函数名以兼容既有调用）。"""
     full = repo["full_name"]
     url = repo["html_url"]
     stars = repo.get("stargazers_count", 0)
@@ -150,21 +270,29 @@ def _render_card(idx: int, repo: dict, summary: str) -> str:
     forks = repo.get("forks_count", 0)
     lic = (repo.get("license") or {}).get("name") or "未标注"
     topics = ", ".join(repo.get("topics", [])) or "无"
+    pct = max(0.04, stars / max_stars) if max_stars else 1
     cid = f"p{idx}"
-    # 人话简介在前，技术元数据折叠在后
     return (
-        f'<article class="card" aria-labelledby="{cid}">\n'
-        f'<h2 id="{cid}"><span class="rank">{idx:02d}</span>{_esc(full)} {_stars(stars)}</h2>\n'
+        f'<li class="entry" id="{cid}" aria-labelledby="{cid}-title" '
+        f'style="--i:{idx-1};--pct:{pct:.4f}">\n'
+        f'<div class="entry-rail"><span class="num" aria-hidden="true">{idx:02d}</span>'
+        f'<div class="bar" role="img" aria-label="收藏数相对本期最高项目：{pct*100:.0f}%">'
+        f'<i></i></div></div>\n'
+        f'<div class="entry-body">\n'
+        f'<header class="entry-head">'
+        f'<h3 id="{cid}-title"><a href="{_esc(url)}" target="_blank" rel="noopener" '
+        f'aria-label="在新窗口打开 GitHub 项目页：{_esc(full)}">{_esc(full)}</a></h3>'
+        f'<div class="metric"><span class="metric-v">{stars:,}</span>'
+        f'<span class="metric-u">收藏</span></div></header>\n'
         f'<div class="summary">{render_summary(summary)}</div>\n'
         f'<details class="tech"><summary>项目详情（给懂技术的人）</summary>\n'
         f'<ul class="facts">'
-        f'<li><a href="{_esc(url)}" target="_blank" rel="noopener" '
-        f'aria-label="在新窗口打开 GitHub 项目页：{_esc(full)}">'
-        f'去 GitHub 看看这个项目 <span aria-hidden="true">↗</span>（新窗口打开）</a></li>'
-        f'<li>主语言：{_esc(lang)} ｜ {forks:,} 人复制过去改 ｜ 使用许可：{_esc(lic)}</li>'
+        f'<li><a href="{_esc(url)}" target="_blank" rel="noopener">'
+        f'在新窗口打开项目页</a></li>'
+        f'<li>主语言：{_esc(lang)} ｜ 被复制 {forks:,} 次 ｜ 使用许可：{_esc(lic)}</li>'
         f'<li>项目标签：{_esc(topics)}</li>'
         f'<li>仓库地址（可复制）：{_esc(url)}</li>'
-        f'</ul></details>\n</article>'
+        f'</ul></details>\n</div></li>'
     )
 
 
@@ -172,17 +300,41 @@ def _head(title: str, css_path: str = "style.css", og_url: str = "") -> str:
     og = ""
     if og_url:
         og = (f'<meta property="og:title" content="{_esc(title)}">\n'
-              f'<meta property="og:description" content="用大白话介绍 GitHub 新晋热门项目">\n'
+              f'<meta property="og:description" content="每天用大白话讲清楚 GitHub 上刚火起来的项目">\n'
               f'<meta property="og:url" content="{_esc(og_url)}">\n')
+    fonts = (
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link href="https://fonts.googleapis.com/css2?'
+        'family=IBM+Plex+Mono:wght@400;500;600&'
+        'family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n'
+    )
     return (
         '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n'
         '<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
         '<meta name="color-scheme" content="light dark">\n'
         f'<title>{_esc(title)}</title>\n'
-        f'<meta name="description" content="{_esc(title)} - 用大白话介绍 GitHub 新晋热门项目">\n'
-        f'{og}<link rel="stylesheet" href="{css_path}">\n'
+        f'<meta name="description" content="{_esc(title)} - 每天用大白话讲清楚 GitHub 上刚火起来的项目">\n'
+        f'{og}{fonts}<link rel="stylesheet" href="{css_path}">\n'
         '</head>\n<body>\n<a class="skip" href="#main">跳到正文</a>\n'
+    )
+
+
+def _topbar(site_title: str, items: list, current_date: str,
+            is_post: bool = False) -> str:
+    root = "../index.html" if is_post else "index.html"
+    jump = ""
+    if len(items) <= 12:
+        for i in range(1, len(items) + 1):
+            href = (f"posts/{current_date}.html" if is_post else f"#p{i}")
+            jump += f'<a href="{href}">{i:02d}</a>'
+    return (
+        '<header class="topbar"><div class="shell topbar-inner">'
+        f'<a class="brand" href="{root}">{_esc(site_title)}</a>'
+        f'<nav class="jump" aria-label="本期项目导航">{jump}</nav>'
+        '<span class="live"><i aria-hidden="true"></i>每日自动更新</span>'
+        '</div></header>'
     )
 
 
@@ -192,8 +344,8 @@ def _archive_block(history: dict, current_date: str) -> str:
         return ""
     items = "".join(
         f'<li><a href="posts/{_esc(p["date"])}.html">'
-        f'{_esc(p.get("date", ""))} · {_esc(p.get("title") or "往期文章")}'
-        f'<span class="cnt"> · Top {p.get("count", "?")}</span></a></li>'
+        f'<span>{_esc(p.get("date", ""))} · {_esc(p.get("title") or "往期文章")}</span>'
+        f'<span class="cnt">Top {p.get("count", "?")}</span></a></li>'
         for p in posts[:60]
     )
     return ('<nav class="archive" aria-label="往期文章">'
@@ -215,19 +367,36 @@ def _pager(history: dict, current_date: str) -> str:
         parts.append('<span></span>')
     if older:
         parts.append(f'<a href="posts/{_esc(older["date"])}.html">旧一期 {_esc(older["date"])} →</a>')
-    else:
-        parts.append('<span></span>')
     return '<nav class="pager" aria-label="相邻期导航">' + "".join(parts) + '</nav>'
 
 
 def _tools(article_date: str) -> str:
+    md = (f'<a href="posts/{article_date}.md">下载本期纯文本</a>'
+          if article_date else "")
     return (
-        '<footer><div>数据来源 <a href="https://github.com/trending" '
-        'target="_blank" rel="noopener">GitHub ↗</a> · 每天自动生成</div>'
-        f'<div class="tools">给站长的工具：'
-        f'<a href="posts/{article_date}.md">下载本期纯文本</a> · '
-        '<a href="feed.json">数据源（JSON）</a></div></footer>'
+        '<footer><div>数据来源 '
+        '<a href="https://github.com/trending" target="_blank" rel="noopener">GitHub</a>'
+        ' · 每日自动生成</div>'
+        f'<div class="tools">{md}<a href="feed.json">数据源（JSON）</a></div></footer>'
     )
+
+
+def _stats(items: list, config, now: str, issue_no: int) -> str:
+    total = sum(r.get("stargazers_count", 0) for r, _ in items)
+    rows = [
+        ("本期项目", f"{len(items):,}", "个"),
+        ("合计收藏", f"{total:,}", ""),
+        ("观察窗口", f"{config.DAYS_BACK}", "天"),
+        ("期号", f"{issue_no:03d}", ""),
+    ]
+    body = ""
+    for k, v, u in rows:
+        unit = f'<span class="stat-u">{u}</span>' if u else ""
+        body += (f'<div class="stat"><span class="stat-k">{k}</span>'
+                 f'<span><span class="stat-v">{v}</span>{unit}</span></div>')
+    return (f'<aside class="stats" aria-label="本期数据">{body}'
+            f'<p class="stat-note">数据来自 GitHub 公共接口<br>'
+            f'更新于 {now} (UTC+{config.TZ_OFFSET_HOURS})</p></aside>')
 
 
 def render_placeholder(config) -> str:
@@ -236,20 +405,15 @@ def render_placeholder(config) -> str:
     site_title = getattr(config, "SITE_TITLE", "GitHub 新晋热门速览")
     page = (
         _head(site_title)
-        + '<main class="wrap" id="main"><header class="hero">'
-        + f'<div class="brand">{_esc(site_title)}</div>'
-        + '<h1>每天用大白话讲清楚 GitHub 上刚火起来的项目</h1>'
-        + '<p class="promise">不懂技术也能看懂。</p>'
-        + '</header><div class="card"><section class="section">'
-        + '<h3 class="label">首期内容生成中</h3>'
-        + '<p>这个站点每天自动更新一次。第一次自动任务跑完后，'
-        + '这里会列出最近一周新冒出来、收藏数涨得最快的项目，'
-        + '并逐个用大白话介绍它们是干嘛的。</p>'
-        + '<p>想现在看看项目源码，可以'
-        + '<a href="https://github.com/dear202606-star/stars" target="_blank" '
-        + 'rel="noopener">去仓库看看 ↗</a>。</p>'
-        + '</section></div></main>'
-        + _tools("") + '</body></html>'
+        + _topbar(site_title, [], "", False)
+        + '<main class="shell" id="main"><div class="placeholder">'
+        + '<p class="eyebrow">每日开源速览 · 即将上线</p>'
+        + '<h1>刚火起来的项目，<em>讲清楚</em>。</h1>'
+        + '<p class="lede">每天扫描 GitHub 近一周新创建、收藏数涨得最快的项目，'
+        + '用大白话逐个介绍。第一次自动任务跑完后，这里会出现榜单。</p>'
+        + '<p><a href="https://github.com/dear202606-star/stars" '
+        + 'target="_blank" rel="noopener">先去看看项目源码</a></p>'
+        + '</div></main>' + _tools("") + '</body></html>'
     )
     path = os.path.join(config.SITE_DIR, "index.html")
     with open(path, "w", encoding="utf-8") as f:
@@ -263,43 +427,55 @@ def render_placeholder(config) -> str:
 
 def render_site(history: dict, items: list, overview: str,
                 article_date: str, md_text: str, config) -> dict:
-    """生成首页、当期 HTML、当期 Markdown、样式、feed.json。返回生成文件清单。"""
+    """生成首页、当期 HTML、当期 Markdown、样式、feed.json。"""
     site_dir = config.SITE_DIR
     posts_dir = os.path.join(site_dir, "posts")
     os.makedirs(posts_dir, exist_ok=True)
 
     title = f"GitHub 本周新晋热门 Top{len(items)}（{article_date}）"
     site_title = getattr(config, "SITE_TITLE", "GitHub 新晋热门速览")
-    cards = "".join(_render_card(i, r, s) for i, (r, s) in enumerate(items, 1))
-    # 看点生成失败时给固定占位，避免布局跳动
+    max_stars = max((r.get("stargazers_count", 0) for r, _ in items), default=1) or 1
+    cards = "".join(_render_card(i, r, s, max_stars)
+                    for i, (r, s) in enumerate(items, 1))
     overview_text = overview or "本期看点整理中，直接往下看项目也行。"
-    overview_html = (
-        f'<div class="overview"><strong>本期看点：</strong>{_inline(overview_text)}</div>')
     archive = _archive_block(history, article_date)
     pager = _pager(history, article_date)
     now = datetime.now(timezone(timedelta(hours=config.TZ_OFFSET_HOURS))
                        ).strftime("%Y-%m-%d %H:%M")
+    issue_no = len(history.get("posts", []))
 
     hero = (
-        f'<header class="hero"><div class="brand">{_esc(site_title)}</div>'
-        f'<h1>{_esc(title)}</h1>'
-        f'<p class="promise">用大白话讲清楚每个项目，不懂技术也能看懂。</p>'
-        f'<p class="meta">每天自动更新 · 近 {config.DAYS_BACK} 天新晋高星项目 · '
-        f'更新于 {now}（UTC+{config.TZ_OFFSET_HOURS}）</p>'
-        f'{overview_html}</header>'
+        '<section class="hero"><div class="hero-main">'
+        f'<p class="eyebrow">{article_date} · 第 {issue_no:03d} 期 · '
+        f'近 {config.DAYS_BACK} 天新晋项目</p>'
+        f'<h1>本周新晋热门 <em>Top {len(items)}</em></h1>'
+        '<p class="lede">每天一次，把 GitHub 上刚冒出来的项目讲清楚。'
+        '不用懂技术，先看它解决什么问题、谁用得上、上手难不难。</p>'
+        f'<div class="overview"><span class="overview-label">本期看点</span>'
+        f'{_inline(overview_text)}</div>'
+        '</div>' + _stats(items, config, now, issue_no) + '</section>'
+    )
+    ranking = (
+        '<section aria-labelledby="ranking-title">'
+        '<div class="rank-head"><h2 id="ranking-title">本期榜单</h2>'
+        '<span>按收藏数排序 · 条形为相对值</span></div>'
+        f'<ol class="list">{cards}</ol></section>'
     )
     base = getattr(config, "SITE_BASE_URL", "")
     og_url = (base.rstrip("/") + "/index.html") if base else ""
 
     index_html = (
         _head(f"{site_title} · {article_date}", "style.css", og_url)
-        + f'<main class="wrap" id="main">{hero}{cards}{pager}{archive}</main>'
+        + _topbar(site_title, items, article_date, False)
+        + f'<main class="shell" id="main">{hero}{ranking}{pager}{archive}</main>'
         + _tools(article_date) + '</body></html>'
     )
     post_html = (
         _head(title, "../style.css", og_url)
-        + f'<main class="wrap" id="main"><a class="back" href="../index.html">← 返回首页</a>'
-        + hero + cards + pager + archive
+        + _topbar(site_title, items, article_date, True)
+        + f'<main class="shell" id="main">'
+        + '<a class="back" href="../index.html">← 返回首页</a>'
+        + hero + ranking + pager + archive
         + '</main>' + _tools(article_date) + '</body></html>'
     )
 
@@ -315,16 +491,11 @@ def render_site(history: dict, items: list, overview: str,
     files["md"] = os.path.join(posts_dir, f"{article_date}.md")
     with open(os.path.join(site_dir, "style.css"), "w", encoding="utf-8") as f:
         f.write(CSS)
-    # 跳过 Jekyll，保证 .md 可访问
     with open(os.path.join(site_dir, ".nojekyll"), "w", encoding="utf-8") as f:
         f.write("")
 
-    feed = {
-        "site": site_title,
-        "updated_at": now,
-        "latest": article_date,
-        "posts": history.get("posts", []),
-    }
+    feed = {"site": site_title, "updated_at": now,
+            "latest": article_date, "posts": history.get("posts", [])}
     with open(os.path.join(site_dir, "feed.json"), "w", encoding="utf-8") as f:
         json.dump(feed, f, ensure_ascii=False, indent=2)
     return files

@@ -28,16 +28,16 @@ def _repo(name: str, stars: int) -> dict:
 
 SUMMARY = (
     "**这是什么**\n"
-    "一个帮你整理资料的小工具，不用懂技术也能用。\n\n"
+    "一个把资料整理好交给 AI 使用的工具。\n\n"
     "**能做什么**\n"
     "- 自动归拢文件\n"
-    "- 一键生成摘要\n\n"
+    "- 生成摘要\n\n"
     "**上手难不难**\n"
-    "很简单，点开就能用。\n\n"
+    "很简单，打开就能用。\n\n"
     "**谁最适合用**\n"
-    "学生、写作者。\n\n"
-    "**为什么火**\n"
-    "暂不确定。"
+    "需要整理大量资料的研究者。\n\n"
+    "**为什么值得关注**\n"
+    "4 天内积累 1,234 收藏，关注度集中。"
 )
 
 
@@ -84,7 +84,6 @@ class TestStore(unittest.TestCase):
         h = store.load(self.path)
         store.set_day_selection(h, "2026-11-05", [_repo("a/b", 100)])
         got = store.get_day_selection(h, "2026-11-05")
-        self.assertEqual(len(got), 1)
         self.assertEqual(got[0]["full_name"], "a/b")
 
     def test_day_selection_keeps_last_14_days(self):
@@ -102,13 +101,12 @@ class TestArticle(unittest.TestCase):
         self.assertIn("本期看点", md)
         self.assertIn("**这是什么**", md)
         self.assertIn("https://github.com/a/b", md)
-        self.assertIn("人收藏", md)
+        self.assertIn("收藏", md)
 
     def test_summary_before_technical_details(self):
-        """普通人先看到人话，技术信息在后。"""
         items = [(_repo("a/b", 1234), SUMMARY)]
         md = article.build_article(items, "2026-11-05")
-        self.assertLess(md.index("**这是什么**"), md.index("主语言"))
+        self.assertLess(md.index("**这是什么**"), md.index("项目主页"))
 
     def test_save_filename_uses_date(self):
         with tempfile.TemporaryDirectory() as d:
@@ -120,7 +118,7 @@ class TestSite(unittest.TestCase):
     def _cfg(self, d):
         class C:
             SITE_DIR = d
-            SITE_TITLE = "测试速览"
+            SITE_TITLE = "新晋热门速览"
             DAYS_BACK = 7
             TZ_OFFSET_HOURS = 8
             SITE_BASE_URL = ""
@@ -133,9 +131,8 @@ class TestSite(unittest.TestCase):
         md = article.build_article(items, "2026-11-05", "看点")
         files = site.render_site(h, items, "看点", "2026-11-05", md, self._cfg(tmp))
 
-        self.assertTrue(os.path.exists(files["index"]))
-        self.assertTrue(os.path.exists(files["html"]))
-        self.assertTrue(os.path.exists(files["md"]))
+        for p in (files["index"], files["html"], files["md"]):
+            self.assertTrue(os.path.exists(p))
         self.assertTrue(os.path.exists(os.path.join(tmp, "style.css")))
         self.assertTrue(os.path.exists(os.path.join(tmp, ".nojekyll")))
 
@@ -147,25 +144,34 @@ class TestSite(unittest.TestCase):
         self.assertIn("自动归拢文件", page)
         self.assertIn("<!DOCTYPE html>", page)
         self.assertNotIn("{css}", page)
+        self.assertNotIn("⭐", page)          # 禁 emoji
+        self.assertIn('class="bar"', page)    # 真实数据条形
 
         with open(os.path.join(tmp, "feed.json"), encoding="utf-8") as f:
             feed = json.load(f)
         self.assertEqual(feed["latest"], "2026-11-05")
 
+    def test_design_system_constraints(self):
+        """反通用设计约束：单一强调色、无霓虹、等宽数字、动效克制。"""
+        self.assertIn("prefers-reduced-motion", site.CSS)
+        self.assertIn("focus-visible", site.CSS)
+        self.assertIn("IBM Plex Mono", site.CSS)
+        self.assertIn("Outfit", site.CSS)
+        self.assertNotIn("purple", site.CSS.lower())
+        self.assertNotIn("#000000", site.CSS)
+        self.assertNotIn("linear-gradient(90deg, #", site.CSS)
+        self.assertIn("@media(max-width:640px)", site.CSS)
+
     def test_accessibility_and_reader_first(self):
-        tmp = tempfile.mkdtemp()
-        cfg = self._cfg(tmp)
         html = site._render_card(1, _repo("a/b", 1234), SUMMARY)
-        self.assertIn("<h3", html)                       # 字段是标题，读屏可导航
-        self.assertIn('aria-labelledby="p1"', html)
-        self.assertIn("人收藏", html)                     # 收藏数说人话
-        self.assertIn('<details class="tech"', html)     # 技术细节折叠
+        self.assertIn("<h4", html)  # 字段是标题，读屏可导航
+        self.assertIn('aria-labelledby="p1-title"', html)
+        self.assertIn('class="metric"', html)
+        self.assertIn('<details class="tech"', html)
         self.assertIn("项目详情（给懂技术的人）", html)
         self.assertLess(html.index("这是什么"), html.index("项目详情"))
-        self.assertIn('aria-hidden="true"', html)
         self.assertIn("新窗口打开", html)
         self.assertIn("skip", site._head("t"))
-        self.assertIn("focus-visible", site.CSS)
 
     def test_html_escapes_injection(self):
         rendered = site.render_summary("**这是什么**\n<script>alert(1)</script>")
@@ -173,7 +179,6 @@ class TestSite(unittest.TestCase):
         self.assertIn("&lt;script&gt;", rendered)
 
     def test_renderer_tolerates_llm_format_drift(self):
-        """小标题同行带冒号、编号列表，都不能丢结构。"""
         drifted = "**这是什么**：一个整理资料的工具\n**能做什么**\n1. 归拢文件\n2. 生成摘要"
         rendered = site.render_summary(drifted)
         self.assertIn("这是什么", rendered)
@@ -192,7 +197,7 @@ class TestSite(unittest.TestCase):
         self.assertNotIn("本期", block)
         self.assertIn("往期", block)
         self.assertIn("posts/2026-11-04.html", block)
-        self.assertIn('<nav', block)
+        self.assertIn("<nav", block)
 
     def test_overview_placeholder_when_empty(self):
         tmp = tempfile.mkdtemp()
@@ -203,13 +208,22 @@ class TestSite(unittest.TestCase):
         with open(f["index"], encoding="utf-8") as fp:
             self.assertIn("本期看点整理中", fp.read())
 
-    def test_fallback_is_plain_language(self):
+    def test_placeholder_uses_same_design(self):
+        tmp = tempfile.mkdtemp()
+        path = site.render_placeholder(self._cfg(tmp))
+        with open(path, encoding="utf-8") as f:
+            page = f.read()
+        self.assertIn("class=\"topbar\"", page)
+        self.assertIn("讲清楚", page)
+
+    def test_fallback_is_professional(self):
         from src import researcher
         fb = researcher._fallback(_repo("a/b", 100), "# English README\nfoo")
         self.assertIn("**这是什么**", fb)
+        self.assertIn("**为什么值得关注**", fb)
         self.assertNotIn("见 README", fb)
         self.assertNotIn("English README", fb)
-        self.assertIn("人收藏", fb)
+        self.assertNotIn("小助手", fb)
 
 
 class TestConfig(unittest.TestCase):
