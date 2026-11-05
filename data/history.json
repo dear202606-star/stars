@@ -138,9 +138,64 @@
       "quality_score": 86.4,
       "first_seen": "2026-11-05",
       "updated_at": "2026-11-06T07:11:34.210891+08:00"
+    },
+    "TauricResearch/TradingAgents": {
+      "stars": 120819,
+      "language": "Python",
+      "category": "finance",
+      "quality_score": 94.0,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
+    },
+    "freqtrade/freqtrade": {
+      "stars": 56500,
+      "language": "Python",
+      "category": "finance",
+      "quality_score": 94.0,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
+    },
+    "ccxt/ccxt": {
+      "stars": 44756,
+      "language": "Python",
+      "category": "finance",
+      "quality_score": 94.0,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
+    },
+    "jangviktor-web/nihaixia": {
+      "stars": 4007,
+      "language": "HTML",
+      "category": "daoshu",
+      "quality_score": 85.5,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
+    },
+    "6tail/lunar-java": {
+      "stars": 981,
+      "language": "Java",
+      "category": "daoshu",
+      "quality_score": 83.9,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
+    },
+    "hhszzzz/taibu": {
+      "stars": 740,
+      "language": "TypeScript",
+      "category": "daoshu",
+      "quality_score": 82.7,
+      "first_seen": "2026-11-06",
+      "updated_at": "2026-11-06T07:17:07.369359+08:00"
     }
   },
   "posts": [
+    {
+      "date": "2026-11-06",
+      "title": "两仪 · 2026-11-06",
+      "count": 6,
+      "md": "posts/2026-11-06.md",
+      "html": "posts/2026-11-06.html"
+    },
     {
       "date": "2026-11-05",
       "title": "两仪 · 2026-11-05",
@@ -543,6 +598,395 @@
             }
           },
           "evidence": "累计 1,736 收藏（32.4/40）；收藏/复制比 5.8，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、MIT License 许可、3 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      }
+    ],
+    "2026-11-06": [
+      {
+        "full_name": "TauricResearch/TradingAgents",
+        "html_url": "https://github.com/TauricResearch/TradingAgents",
+        "stargazers_count": 120819,
+        "forks_count": 23095,
+        "language": "Python",
+        "license": {
+          "key": "apache-2.0",
+          "name": "Apache License 2.0",
+          "spdx_id": "Apache-2.0",
+          "url": "https://api.github.com/licenses/apache-2.0",
+          "node_id": "MDc6TGljZW5zZTI="
+        },
+        "topics": [
+          "agent",
+          "finance",
+          "llm",
+          "multiagent",
+          "trading"
+        ],
+        "description": "TradingAgents: Multi-Agents LLM Financial Trading Framework",
+        "homepage": "https://tauric.ai",
+        "created_at": "2024-12-28T03:31:08Z",
+        "pushed_at": "2026-11-04T10:13:58Z",
+        "open_issues_count": 123,
+        "id": 909213664,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 94.0,
+          "parts": {
+            "stars": {
+              "score": 40.0,
+              "max": 40,
+              "value": 120819
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 5.2,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 1,
+              "note": "1 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、Apache License 2.0 许可、5 个标签、有主页"
+            }
+          },
+          "evidence": "累计 120,819 收藏（40.0/40）；收藏/复制比 5.2，关注与使用接近（14.0/20）；1 天前更新（25.0/25）；有简介、Apache License 2.0 许可、5 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "freqtrade/freqtrade",
+        "html_url": "https://github.com/freqtrade/freqtrade",
+        "stargazers_count": 56500,
+        "forks_count": 11676,
+        "language": "Python",
+        "license": {
+          "key": "gpl-3.0",
+          "name": "GNU General Public License v3.0",
+          "spdx_id": "GPL-3.0",
+          "url": "https://api.github.com/licenses/gpl-3.0",
+          "node_id": "MDc6TGljZW5zZTk="
+        },
+        "topics": [
+          "algorithmic-trading",
+          "bitcoin",
+          "cryptocurrencies",
+          "cryptocurrency",
+          "freqtrade",
+          "python",
+          "telegram-bot",
+          "trade",
+          "trading-bot"
+        ],
+        "description": "Free, open source crypto trading bot",
+        "homepage": "https://www.freqtrade.io",
+        "created_at": "2017-05-17T23:48:53Z",
+        "pushed_at": "2026-11-05T05:06:42Z",
+        "open_issues_count": 24,
+        "id": 91629816,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 94.0,
+          "parts": {
+            "stars": {
+              "score": 40.0,
+              "max": 40,
+              "value": 56500
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 4.8,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、GNU General Public License v3.0 许可、9 个标签、有主页"
+            }
+          },
+          "evidence": "累计 56,500 收藏（40.0/40）；收藏/复制比 4.8，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、GNU General Public License v3.0 许可、9 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "ccxt/ccxt",
+        "html_url": "https://github.com/ccxt/ccxt",
+        "stargazers_count": 44756,
+        "forks_count": 8952,
+        "language": "Python",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "altcoin",
+          "api",
+          "arbitrage",
+          "bitcoin",
+          "bot",
+          "btc",
+          "crypto",
+          "cryptocurrencies",
+          "cryptocurrency",
+          "eth",
+          "ethereum",
+          "exchange",
+          "invest",
+          "library",
+          "market-data",
+          "memecoin",
+          "strategy",
+          "trade",
+          "trading"
+        ],
+        "description": "A unified trading API with more than 100 crypto exchanges and prediction markets in JavaScript / TypeScript / Python / C# / PHP / Go / Java / Rust",
+        "homepage": "https://docs.ccxt.com",
+        "created_at": "2017-05-14T15:41:56Z",
+        "pushed_at": "2026-11-05T07:44:17Z",
+        "open_issues_count": 767,
+        "id": 91253698,
+        "category": "finance",
+        "category_label": "金融与量化",
+        "_score": {
+          "total": 94.0,
+          "parts": {
+            "stars": {
+              "score": 40.0,
+              "max": 40,
+              "value": 44756
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 5.0,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、19 个标签、有主页"
+            }
+          },
+          "evidence": "累计 44,756 收藏（40.0/40）；收藏/复制比 5.0，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、MIT License 许可、19 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "jangviktor-web/nihaixia",
+        "html_url": "https://github.com/jangviktor-web/nihaixia",
+        "stargazers_count": 4007,
+        "forks_count": 743,
+        "language": "HTML",
+        "license": null,
+        "topics": [
+          "acupuncture",
+          "agent-skill",
+          "agent-skills",
+          "chinese-medicine",
+          "claude-code-skills",
+          "codex-skill",
+          "nihaisha",
+          "nihaixia",
+          "nishi",
+          "openclaw",
+          "openclaw-skill",
+          "openclaw-skills",
+          "tcm",
+          "tcmcp",
+          "traditional-chinese-medicine",
+          "traditional-chinese-medicine-healthcare"
+        ],
+        "description": "倪海厦视角的中医Agent Skill，基于倪海厦教学资料开发，蒸馏倪师伤寒论、金匮要略、黄帝内经、神农本草经、针灸篇等，人纪/医案/经方思维，六经辨证，八纲辨证，天机道，天纪，紫微斗数，易经，阴阳，八卦，五行，风水，地纪等，总结8个诊断公式+快速诊断流程图+脉舌速查+七步走思维模式，蒸馏129条伤寒论 · 23篇金匮 · 72篇黄帝内经 · 神农本草经374种本草（上137/中110/下127） · 1257 例结构化案例 + 243 例叙事医案 · 2,452页讲义。",
+        "homepage": "https://jangviktor-web.github.io/nihaixia/",
+        "created_at": "2026-04-14T07:49:54Z",
+        "pushed_at": "2026-10-28T08:45:38Z",
+        "open_issues_count": 4,
+        "id": 1210223495,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 85.5,
+          "parts": {
+            "stars": {
+              "score": 36.0,
+              "max": 40,
+              "value": 4007
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 5.4,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 8,
+              "note": "8 天前更新"
+            },
+            "docs": {
+              "score": 10.5,
+              "max": 15,
+              "note": "有简介、无许可、16 个标签、有主页"
+            }
+          },
+          "evidence": "累计 4,007 收藏（36.0/40）；收藏/复制比 5.4，关注与使用接近（14.0/20）；8 天前更新（25.0/25）；有简介、无许可、16 个标签、有主页（10.5/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "6tail/lunar-java",
+        "html_url": "https://github.com/6tail/lunar-java",
+        "stargazers_count": 981,
+        "forks_count": 209,
+        "language": "Java",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "calendar",
+          "java",
+          "lunar"
+        ],
+        "description": "日历、公历(阳历)、农历(阴历、老黄历)、佛历、道历，支持节假日、星座、儒略日、干支、生肖、节气、节日、彭祖百忌、每日宜忌、吉神宜趋凶煞宜忌、吉神(喜神/福神/财神/阳贵神/阴贵神)方位、胎神方位、冲煞、纳音、星宿、八字、五行、十神、建除十二值星、青龙名堂等十二神、黄道日及吉凶等。lunar is a calendar library for Solar and Chinese Lunar.",
+        "homepage": "http://6tail.cn/calendar/api.html",
+        "created_at": "2018-06-23T08:41:14Z",
+        "pushed_at": "2026-11-05T11:34:38Z",
+        "open_issues_count": 39,
+        "id": 138385487,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 83.9,
+          "parts": {
+            "stars": {
+              "score": 29.9,
+              "max": 40,
+              "value": 981
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 4.7,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、MIT License 许可、3 个标签、有主页"
+            }
+          },
+          "evidence": "累计 981 收藏（29.9/40）；收藏/复制比 4.7，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、MIT License 许可、3 个标签、有主页（15.0/15）",
+          "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
+        },
+        "archived": false
+      },
+      {
+        "full_name": "hhszzzz/taibu",
+        "html_url": "https://github.com/hhszzzz/taibu",
+        "stargazers_count": 740,
+        "forks_count": 156,
+        "language": "TypeScript",
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null,
+          "node_id": "MDc6TGljZW5zZTA="
+        },
+        "topics": [
+          "agent",
+          "astrology",
+          "bazi",
+          "divination",
+          "fortune-teller",
+          "liuren",
+          "liuyao",
+          "mbti",
+          "mcp",
+          "meihua",
+          "meihua-yishu",
+          "qimendunjia",
+          "skills",
+          "taiyi",
+          "tarot",
+          "xiaoliuren",
+          "ziweidoushu"
+        ],
+        "description": "命理分析 Agent，涵盖八字、紫微、六爻、梅花、奇门、大/小六壬、占星术、太乙神数、塔罗、MBTI、面/手相、合盘、每日/每月运势、周公解梦等。支持MCP和Skills",
+        "homepage": "https://mingai.fun",
+        "created_at": "2026-01-04T07:47:59Z",
+        "pushed_at": "2026-11-05T15:13:12Z",
+        "open_issues_count": 1,
+        "id": 1127593436,
+        "category": "daoshu",
+        "category_label": "道术 · 玄学术数",
+        "_score": {
+          "total": 82.7,
+          "parts": {
+            "stars": {
+              "score": 28.7,
+              "max": 40,
+              "value": 740
+            },
+            "ratio": {
+              "score": 14.0,
+              "max": 20,
+              "value": 4.7,
+              "grade": "关注与使用接近"
+            },
+            "activity": {
+              "score": 25.0,
+              "max": 25,
+              "value": 0,
+              "note": "0 天前更新"
+            },
+            "docs": {
+              "score": 15.0,
+              "max": 15,
+              "note": "有简介、Other 许可、17 个标签、有主页"
+            }
+          },
+          "evidence": "累计 740 收藏（28.7/40）；收藏/复制比 4.7，关注与使用接近（14.0/20）；0 天前更新（25.0/25）；有简介、Other 许可、17 个标签、有主页（15.0/15）",
           "formula": "综合质量分 = 累计收藏(40) + 收藏/复制比(20) + 最近维护(25) + 文档与许可(15)，满分 100；四项均取自 GitHub 公开数据，可在项目主页自行复核。"
         },
         "archived": false

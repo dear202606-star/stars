@@ -1,8 +1,8 @@
 {
   "site": "两仪",
   "tagline": "一边算得清，一边算不尽。",
-  "updated_at": "2026-11-06 07:11",
-  "latest": "2026-11-05",
+  "updated_at": "2026-11-06 07:17",
+  "latest": "2026-11-06",
   "categories": [
     {
       "key": "finance",
@@ -17,6 +17,13 @@
   ],
   "per_category": 3,
   "posts": [
+    {
+      "date": "2026-11-06",
+      "title": "两仪 · 2026-11-06",
+      "count": 6,
+      "md": "posts/2026-11-06.md",
+      "html": "posts/2026-11-06.html"
+    },
     {
       "date": "2026-11-05",
       "title": "两仪 · 2026-11-05",
