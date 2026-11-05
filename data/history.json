@@ -1,0 +1,104 @@
+{
+  "recommended": {
+    "deepseek-ai/dsh-superagent-prototype": {
+      "stars": 19225,
+      "language": "TypeScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:22:39.499692+08:00"
+    },
+    "storytold/craft-anything": {
+      "stars": 13944,
+      "language": "Rust",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:22:39.499692+08:00"
+    },
+    "patch-gg/pixelfx": {
+      "stars": 5109,
+      "language": "JavaScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:22:39.499692+08:00"
+    }
+  },
+  "posts": [
+    {
+      "date": "2026-11-05",
+      "title": "GitHub 本周新晋热门 Top3（2026-11-05）",
+      "count": 3,
+      "md": "posts/2026-11-05.md",
+      "html": "posts/2026-11-05.html"
+    }
+  ],
+  "day_selection": {
+    "2026-11-05": [
+      {
+        "full_name": "deepseek-ai/dsh-superagent-prototype",
+        "html_url": "https://github.com/deepseek-ai/dsh-superagent-prototype",
+        "stargazers_count": 19225,
+        "forks_count": 2186,
+        "language": "TypeScript",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [],
+        "description": "Towards a More Autonomous Agent System",
+        "created_at": "2026-10-31T09:32:46Z",
+        "pushed_at": "2026-11-03T09:29:14Z",
+        "open_issues_count": 0,
+        "id": 1440705679
+      },
+      {
+        "full_name": "storytold/craft-anything",
+        "html_url": "https://github.com/storytold/craft-anything",
+        "stargazers_count": 13944,
+        "forks_count": 2365,
+        "language": "Rust",
+        "license": {
+          "key": "apache-2.0",
+          "name": "Apache License 2.0",
+          "spdx_id": "Apache-2.0",
+          "url": "https://api.github.com/licenses/apache-2.0",
+          "node_id": "MDc6TGljZW5zZTI="
+        },
+        "topics": [],
+        "description": "Craft Anything: understand how any software works, and craft your own.",
+        "created_at": "2026-10-31T14:50:00Z",
+        "pushed_at": "2026-11-04T22:45:59Z",
+        "open_issues_count": 254,
+        "id": 1440956372
+      },
+      {
+        "full_name": "patch-gg/pixelfx",
+        "html_url": "https://github.com/patch-gg/pixelfx",
+        "stargazers_count": 5109,
+        "forks_count": 679,
+        "language": "JavaScript",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "agent-skills",
+          "animation",
+          "canvas",
+          "claude-code-plugin",
+          "gamedev",
+          "pixel-art",
+          "sprite-sheet",
+          "vfx"
+        ],
+        "description": "244 pixel art effects, every one a small piece of code. Plus a Claude Code skill to make your own.",
+        "created_at": "2026-10-30T06:43:25Z",
+        "pushed_at": "2026-10-31T08:44:14Z",
+        "open_issues_count": 8,
+        "id": 1439372976
+      }
+    ]
+  }
+}
