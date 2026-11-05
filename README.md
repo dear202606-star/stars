@@ -39,11 +39,14 @@ GitHub Actions 定时(每天北京 09:07)
 > `SUPABASE_REQUIRED=1`：云端写 Supabase 失败即让任务失败，避免静默丢数据；
 > 本地未配置时自动跳过，不阻断文章生成。
 
-### 关于 GitHub Pages
+### GitHub Pages（已启用）
 
-当前仓库为 **Private**，免费计划不支持私有仓库的 Pages，因此 workflow 会
-跳过部署步骤（其余链路全部正常）。若需要公开网页，把仓库改为 **Public** 即可，
-无需改任何代码；`Settings → Pages → Source` 选 `GitHub Actions` 后自动生效。
+仓库为 **Public**，Pages 已通过 API 启用为 `workflow` 构建模式，
+每日任务完成后自动部署，无需任何手工操作。
+workflow 内置可用性检查：若仓库被改回私有，会自动跳过部署并给出告警，
+不影响文章生成与 Supabase 持久化。
+
+> 免费计划不支持私有仓库 Pages。公开前已扫描全部 git 历史，确认无密钥残留。
 
 ### 手动触发
 
