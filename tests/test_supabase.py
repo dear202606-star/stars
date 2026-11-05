@@ -51,7 +51,7 @@ class TestPersist(unittest.TestCase):
         })
 
     def test_persist_calls_all_endpoints(self):
-        items = [(_repo("a/b", 100), SUMMARY)]
+        items = [(_repo("a/b", 100, "finance"), SUMMARY)]
         history = {"recommended": {"a/b": {"stars": 100,
                                             "language": "Python",
                                             "first_seen": "2026-11-05"}}}
@@ -80,6 +80,13 @@ class TestPersist(unittest.TestCase):
                             if c[0] == "daily_projects" and c[1] == "POST")
         self.assertEqual(proj_payload[0]["rank"], 1)
         self.assertIn("sections", proj_payload[0])
+        sections = proj_payload[0]["sections"]
+        self.assertEqual(sections["分类"], "金融与量化")
+        self.assertEqual(sections["分类标识"], "finance")
+        self.assertIn("综合质量分", sections)
+        self.assertIn("评分依据", sections)
+        self.assertIn("评分分项", sections)
+        self.assertIn("为什么值得关注", sections)
 
     def test_strict_mode_raises(self):
         with self._env(), mock.patch.object(

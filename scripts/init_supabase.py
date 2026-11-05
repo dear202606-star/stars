@@ -5,6 +5,11 @@
 使用 Supabase Management API 执行 DDL，纯云端、无需数据库驱动。
 仅需在首次部署或表结构变更时运行一次；日常每日任务不执行本脚本。
 
+双分类与质量分不需要改表：src/supabase_store.py 把它们写进已有的
+daily_projects.sections / raw JSONB，线上既有表直接可用，无需新 Secret。
+按分类查询示例：
+    /rest/v1/daily_projects?sections->>分类=eq.金融与量化
+
 用法：
     SUPABASE_ACCESS_TOKEN=sbp_xxx python scripts/init_supabase.py
 """

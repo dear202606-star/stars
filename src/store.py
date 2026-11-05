@@ -1,7 +1,10 @@
-"""JSON 历史存储：跨天去重 + 文章索引。
+"""JSON 历史存储：按分类跨天轮播去重 + 文章索引。
 
 用纯 JSON 而非 SQLite，因为 GitHub Actions 每次都是干净 runner，
 只有随仓库提交的文件才能跨次持久化。JSON 还可直接 diff、易排查。
+
+去重键实际是 (category, full_name)：同一项目在两个分类里各自轮播，
+不因另一分类上榜而被跳过。
 """
 
 import json
@@ -11,8 +14,9 @@ from datetime import datetime, timedelta, timezone
 
 _REPO_FIELDS = (
     "full_name", "html_url", "stargazers_count", "forks_count",
-    "language", "license", "topics", "description",
+    "language", "license", "topics", "description", "homepage",
     "created_at", "pushed_at", "open_issues_count", "id",
+    "category", "category_label", "_score", "archived",
 )
 
 
@@ -29,6 +33,10 @@ def load(history_file: str) -> dict:
         data.setdefault("recommended", {})
         data.setdefault("posts", [])
         data.setdefault("day_selection", {})
+        # 迁移：旧版「新晋 Top10」历史没有分类，标成 legacy，不参与新分类去重
+        for v in data["recommended"].values():
+            if isinstance(v, dict) and not v.get("category"):
+                v["category"] = "legacy"
         return data
     except (json.JSONDecodeError, OSError):
         return _empty()
@@ -57,9 +65,69 @@ def dedupe(history: dict, candidates: list, top_n: int) -> list:
     return result
 
 
+def recent_names(history: dict, category_key: str, before_date: str,
+                 window_days: int = 7) -> set:
+    """取最近 window_days 天该分类出现过的项目，用于避免连续重复。"""
+    from datetime import date
+    try:
+        end = date.fromisoformat(before_date)
+    except (ValueError, TypeError):
+        return set()
+    out = set()
+    for day, rows in (history.get("day_selection") or {}).items():
+        try:
+            delta = (end - date.fromisoformat(day)).days
+        except (ValueError, TypeError):
+            continue
+        if 0 < delta <= window_days:
+            out.update(r.get("full_name") for r in rows
+                       if (r or {}).get("category") == category_key)
+    return out
+
+
+def dedupe_for_category(history: dict, ranked: list,
+                        category_key: str, n: int,
+                        recent: set = None) -> list:
+    """按分类轮播：未推荐过的优先，其次旧的，最后才考虑最近几天出现过的。"""
+    seen = {name for name, v in (history.get("recommended") or {}).items()
+            if (v or {}).get("category") == category_key}
+    recent = recent or set()
+    fresh, used, too_recent = [], [], []
+    for r in ranked:
+        name = r["full_name"]
+        if name in recent:
+            too_recent.append(r)
+        elif name in seen:
+            used.append(r)
+        else:
+            fresh.append(r)
+    out = fresh[:n]
+    for pool in (used, too_recent):
+        if len(out) < n:
+            out.extend(pool[: n - len(out)])
+    return out
+
+
 def get_day_selection(history: dict, article_date: str) -> list:
     """取当天已选定的项目快照；同日重跑时复用，保证文章稳定可复现。"""
-    return history.get("day_selection", {}).get(article_date, [])
+    snap = history.get("day_selection", {}).get(article_date, [])
+    # 旧版无分类字段的快照属于「新晋 Top10」，不能复用为双分类榜单
+    if snap and all(not (r or {}).get("category") for r in snap):
+        return []
+    return snap
+
+
+def last_selection_for_category(history: dict, category_key: str,
+                                before_date: str) -> list:
+    """采集失败时，取上一期该分类的项目兜底，保证每个分类不空榜。"""
+    days = history.get("day_selection", {})
+    for d in sorted(days.keys(), reverse=True):
+        if d >= before_date:
+            continue
+        rows = [r for r in days[d] if (r or {}).get("category") == category_key]
+        if rows:
+            return rows
+    return []
 
 
 def set_day_selection(history: dict, article_date: str, repos: list) -> None:
@@ -78,6 +146,8 @@ def mark_recommended(history: dict, repos: list, article_date: str,
         history["recommended"][r["full_name"]] = {
             "stars": r.get("stargazers_count", 0),
             "language": r.get("language"),
+            "category": r.get("category", "legacy"),
+            "quality_score": (r.get("_score") or {}).get("total"),
             "first_seen": article_date,
             "updated_at": now,
         }

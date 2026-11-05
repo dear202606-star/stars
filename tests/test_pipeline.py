@@ -5,12 +5,17 @@ import os
 import tempfile
 import unittest
 
+from datetime import datetime, timezone
+
 import config
-from src import article, site, store
+from src import article, scoring, site, store
+
+_LABELS = {"finance": "金融与量化", "daoshu": "道术 · 玄学术数"}
+_NOW = datetime(2026, 11, 5, tzinfo=timezone.utc)
 
 
-def _repo(name: str, stars: int) -> dict:
-    return {
+def _repo(name: str, stars: int, category: str = None) -> dict:
+    r = {
         "full_name": name,
         "html_url": f"https://github.com/{name}",
         "stargazers_count": stars,
@@ -19,11 +24,21 @@ def _repo(name: str, stars: int) -> dict:
         "license": {"name": "MIT"},
         "topics": ["ai", "tool"],
         "description": "一个测试项目",
+        "homepage": "",
         "created_at": "2026-11-01T00:00:00Z",
         "pushed_at": "2026-11-05T00:00:00Z",
         "open_issues_count": 3,
         "id": stars,
+        "archived": False,
     }
+    if category:
+        r["category"] = category
+        r["category_label"] = _LABELS.get(category, category)
+        # 真实归类需要文本证据，测试数据也带上分类主题词
+        r["description"] = ("开源量化交易回测工具" if category == "finance"
+                            else "八字紫微斗数排盘工具")
+        r["_score"] = scoring.score_repo(r, now=_NOW)
+    return r
 
 
 SUMMARY = (
@@ -82,9 +97,23 @@ class TestStore(unittest.TestCase):
 
     def test_day_selection_roundtrip(self):
         h = store.load(self.path)
-        store.set_day_selection(h, "2026-11-05", [_repo("a/b", 100)])
+        store.set_day_selection(h, "2026-11-05",
+                                [_repo("a/b", 100, "finance")])
         got = store.get_day_selection(h, "2026-11-05")
         self.assertEqual(got[0]["full_name"], "a/b")
+        self.assertEqual(got[0]["category"], "finance")
+
+    def test_legacy_selection_is_not_reused(self):
+        h = store.load(self.path)
+        store.set_day_selection(h, "2026-11-05", [_repo("a/b", 100)])
+        self.assertEqual(store.get_day_selection(h, "2026-11-05"), [])
+
+    def test_legacy_history_is_migrated(self):
+        h = store.load(self.path)
+        store.mark_recommended(h, [_repo("a/b", 100)], "2026-11-05")
+        store.save(h, self.path)
+        self.assertEqual(store.load(self.path)["recommended"]["a/b"]["category"],
+                         "legacy")
 
     def test_day_selection_keeps_last_14_days(self):
         h = store.load(self.path)
@@ -97,11 +126,13 @@ class TestArticle(unittest.TestCase):
     def test_build_contains_sections(self):
         items = [(_repo("a/b", 1234), SUMMARY)]
         md = article.build_article(items, "2026-11-05", "本期看点测试")
-        self.assertIn("Top1", md)
+        self.assertIn("金融与量化", md)
+        self.assertIn("### 01", md)
         self.assertIn("本期看点", md)
         self.assertIn("**这是什么**", md)
         self.assertIn("https://github.com/a/b", md)
         self.assertIn("收藏", md)
+        self.assertIn("评分口径", md)
 
     def test_summary_before_technical_details(self):
         items = [(_repo("a/b", 1234), SUMMARY)]
@@ -118,7 +149,9 @@ class TestSite(unittest.TestCase):
     def _cfg(self, d):
         class C:
             SITE_DIR = d
-            SITE_TITLE = "新晋热门速览"
+            SITE_TITLE = "GitHub 双榜 · 金融与道术"
+            CATEGORIES = config.CATEGORIES
+            PER_CATEGORY = config.PER_CATEGORY
             DAYS_BACK = 7
             TZ_OFFSET_HOURS = 8
             SITE_BASE_URL = ""
@@ -146,10 +179,16 @@ class TestSite(unittest.TestCase):
         self.assertNotIn("{css}", page)
         self.assertNotIn("⭐", page)          # 禁 emoji
         self.assertIn('class="bar"', page)    # 真实数据条形
+        self.assertIn('id="cat-finance"', page)
+        self.assertIn("筛选与评分口径", page)
+        self.assertIn("综合质量分 = 累计收藏(40)", page)
+        self.assertIn("不追新", page)
+        self.assertNotIn("近 7 天新晋", page)
 
         with open(os.path.join(tmp, "feed.json"), encoding="utf-8") as f:
             feed = json.load(f)
         self.assertEqual(feed["latest"], "2026-11-05")
+        self.assertEqual(len(feed["categories"]), 2)
 
     def test_design_system_constraints(self):
         """反通用设计约束：单一强调色、无霓虹、等宽数字、动效克制。"""
@@ -214,7 +253,8 @@ class TestSite(unittest.TestCase):
         with open(path, encoding="utf-8") as f:
             page = f.read()
         self.assertIn("class=\"topbar\"", page)
-        self.assertIn("讲清楚", page)
+        self.assertIn("各自成榜", page)
+        self.assertIn("不追新", page)
 
     def test_fallback_is_professional(self):
         from src import researcher
@@ -229,8 +269,20 @@ class TestSite(unittest.TestCase):
 class TestConfig(unittest.TestCase):
     def test_defaults_sane(self):
         self.assertGreater(config.TOP_N, 0)
-        self.assertGreater(config.DAYS_BACK, 0)
+        self.assertEqual(config.PER_CATEGORY, 3)
+        self.assertEqual(len(config.CATEGORIES), 2)
+        self.assertEqual({c["key"] for c in config.CATEGORIES},
+                         {"finance", "daoshu"})
+        self.assertGreater(config.CATEGORIES[0]["min_stars"],
+                           config.CATEGORIES[1]["min_stars"])
         self.assertEqual(config.TZ_OFFSET_HOURS, 8)
+
+    def test_no_created_filter_in_categories(self):
+        for c in config.CATEGORIES:
+            self.assertTrue(c["keywords"])
+            self.assertTrue(c["match"])
+            self.assertTrue(c["strong"])
+            self.assertGreaterEqual(c["min_stars"], 0)
 
 
 if __name__ == "__main__":

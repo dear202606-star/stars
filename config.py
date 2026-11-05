@@ -34,17 +34,63 @@ def _env_int(key: str, default: int) -> int:
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_API_BASE = "https://api.github.com"
 
-# ---------- 采集策略：近 N 天新晋热门 ----------
-DAYS_BACK = _env_int("DAYS_BACK", 7)
-MIN_STARS = _env_int("MIN_STARS", 50)
-TOP_N = _env_int("TOP_N", 10)
+# ---------- 采集策略：双垂直分类，高分存量轮播（不追新）----------
+# 供给调研结论：近 7 天新建的金融项目个位数、术数项目为 0；
+# 因此不按创建时间过滤，改按分类主题词检索长期积累的项目库，每日轮播不重复。
+CATEGORIES = [
+    {
+        "key": "finance",
+        "label": "金融与量化",
+        "tab": "金融",
+        "desc": "量化交易、行情数据、投资组合、Fintech 与链上金融",
+        "min_stars": _env_int("FINANCE_MIN_STARS", 500),
+        "keywords": ["quant", "trading", "fintech", "backtesting",
+                     "stock", "defi", "portfolio", "financial"],
+        "strong": ["trading", "backtesting", "backtest", "fintech",
+                   "quantitative", "stock", "defi", "portfolio", "crypto",
+                   "financial", "金融", "量化", "交易", "股票", "理财",
+                   "期货", "加密", "行情", "回测"],
+        "weak": ["quant", "finance", "investment", "fund", "banking"],
+        "match": ["quant", "trading", "trade", "fintech", "backtest", "stock",
+                  "defi", "portfolio", "financial", "finance", "金融", "量化",
+                  "交易", "股票", "理财", "期货", "加密", "行情"],
+    },
+    {
+        "key": "daoshu",
+        "label": "道术 · 玄学术数",
+        "tab": "道术",
+        "desc": "八字、紫微斗数、风水、易经、占卜与塔罗等术数工具",
+        "min_stars": _env_int("DAOSHU_MIN_STARS", 5),
+        "keywords": ["bazi", "八字", "ziwei", "fengshui", "iching",
+                     "tarot", "astrology", "divination", "易经", "占卜"],
+        "strong": ["bazi", "ziwei", "fengshui", "iching", "tarot",
+                   "astrology", "divination", "numerology", "qimen",
+                   "horoscope", "lunar", "八字", "紫微", "斗数", "风水",
+                   "易经", "周易", "六爻", "奇门", "占卜", "塔罗", "占星",
+                   "命理", "术数", "玄学", "排盘", "黄历"],
+        "weak": [],
+        "match": ["bazi", "ziwei", "fengshui", "iching", "tarot",
+                  "astrology", "divination", "numerology", "qimen", "horoscope",
+                  "八字", "紫微", "斗数", "风水", "易经", "周易", "六爻",
+                  "奇门", "占卜", "塔罗", "占星", "命理", "术数", "玄学"],
+    },
+]
+
+PER_CATEGORY = _env_int("PER_CATEGORY", _env_int("TOP_N", 3))
+TOP_N = PER_CATEGORY  # 兼容 --top 参数与既有调用
+ROTATION_WINDOW_DAYS = _env_int("ROTATION_WINDOW_DAYS", 7)  # 最近 N 天不重复
 PER_PAGE = 50
-MAX_PAGES = 5
+MAX_PAGES = 1          # 每个关键词取 1 页，控制请求数
+SEARCH_INTERVAL = float(os.environ.get("SEARCH_INTERVAL", "1.0"))
+MAX_CANDIDATES = _env_int("MAX_CANDIDATES", 400)
+DAYS_BACK = _env_int("DAYS_BACK", 7)   # 兼容旧配置，本版不再按创建时间筛选
+MIN_STARS = _env_int("MIN_STARS", 50)  # 兼容旧配置，实际门槛按分类 min_stars
 EXCLUDE_FORKS = True
 EXCLUDE_KEYWORDS = [
-    "awesome", "interview", "tutorial", "roadmap",
-    "book", "course", "learn", "cheatsheet", "resources",
-    "简历", "面试", "教程", "资源",
+    "awesome", "interview", "internship", "tutorial", "roadmap",
+    "book", "books", "course", "learn", "cheatsheet", "resources",
+    "collection", "jobs",
+    "简历", "面试", "教程", "资源", "书单", "面试题", "求职",
 ]
 
 # ---------- 网络重试 ----------
@@ -69,6 +115,6 @@ HISTORY_FILE = os.environ.get(
     "HISTORY_FILE", os.path.join(DATA_DIR, "history.json"))
 
 # ---------- 文章配置 ----------
-ARTICLE_AUTHOR = os.environ.get("ARTICLE_AUTHOR", "GitHub 星榜")
-SITE_TITLE = os.environ.get("SITE_TITLE", "GitHub 新晋热门速览")
+ARTICLE_AUTHOR = os.environ.get("ARTICLE_AUTHOR", "GitHub 双榜")
+SITE_TITLE = os.environ.get("SITE_TITLE", "GitHub 双榜 · 金融与道术")
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "")

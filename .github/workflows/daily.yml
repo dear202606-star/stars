@@ -1,4 +1,4 @@
-name: 每日 GitHub 新晋热门 Top10
+name: 每日 GitHub 双榜 · 金融与道术
 
 on:
   schedule:
@@ -12,7 +12,7 @@ on:
         required: false
         default: ''
       top:
-        description: 'Top N（留空=10）'
+        description: '每个分类取几个（留空=3）'
         required: false
         default: ''
 
@@ -70,6 +70,8 @@ jobs:
           LLM_BASE_URL: https://api.deepseek.com/v1
           LLM_MODEL: deepseek-chat
           TZ_OFFSET_HOURS: '8'
+          # 分类检索请求间隔，避免 GitHub 次级限流
+          SEARCH_INTERVAL: '1'
           # Supabase 持久化：全部来自 Secrets，无本地依赖
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -90,7 +92,7 @@ jobs:
           else
             git -c user.name="github-actions[bot]" \
                 -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-                commit -m "chore: 每日 Top10 自动生成 $(date -u +%F)"
+                commit -m "chore: 每日双榜自动生成 $(date -u +%F)"
             git push
           fi
 

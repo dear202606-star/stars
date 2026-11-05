@@ -21,6 +21,10 @@ STYLE_RULES = (
     "- 每个判断尽量有依据：能引用给定数据（发布天数、收藏数、被复制数、标签）就引用；"
     "没有依据时明确说「公开信息里看不出来」，不要猜测媒体曝光、大厂背书或团队背景\n"
     "- 客观，不夸大、不编造 README 与元信息里没有的功能\n"
+    "- 本榜不追新：禁止「新晋、刚火、暴涨、新星、黑马」这类说法，"
+    "收录的是长期积累的成熟项目\n"
+    "- 不用「广受好评、社区活跃、口碑极佳」这类没有来源的评价；"
+    "要评价就引用给定的质量分分项与原始数据\n"
     "- 不用 emoji，不用破折号堆砌，不用感叹号\n"
     "- 自检：一个不懂技术的成年人读完，能准确复述这是做什么的、自己要不要用"
 )
@@ -44,21 +48,27 @@ SYSTEM_PROMPT = (
     "**谁最适合用**\n"
     "指出一到两类具体人群，以及它能替他们省掉哪一件事。避免「所有人都能用」。\n\n"
     "**为什么值得关注**\n"
-    "基于给定数据做有依据的解读：它在几天内积累了多少收藏、被复制多少次、"
-    "标签指向哪个方向、解决了什么此前麻烦的问题。"
-    "如果数据不足以判断原因，就如实写「公开信息里看不出具体原因，但 N 天内积累 X 收藏，"
-    "说明关注度确实集中」。不要编造媒体报道、公司背书或融资信息。\n\n"
+    "基于给定数据说明它为什么被选进本榜：累计收藏与被复制数反映长期关注度，"
+    "收藏/复制比、最近更新时间、文档与许可完整度反映维护状态，"
+    "并引用综合质量分的分项得分（收藏 / 比例 / 维护 / 文档）。"
+    "再点出标签指向的方向、它替人省掉了哪件麻烦事。"
+    "不要写「几天内涨了多少」「刚火起来」，本榜收录的不是新项目；"
+    "数据不足以判断时明确说「公开信息里看不出来」。"
+    "不要编造媒体报道、公司背书或融资信息。\n\n"
     f"编辑准则：\n{STYLE_RULES}\n"
     "- 总字数 180-280 字"
 )
 
 OVERVIEW_PROMPT = (
-    "你是科技媒体的值班编辑，要为今天的开源榜单写一段「本期看点」。\n"
-    "基于给定的真实榜单数据（项目名、收藏数、标签、描述），"
-    "用 2-3 句话指出这批项目共同在解决什么问题、反映出什么方向。\n\n"
+    "你是科技媒体的值班编辑，要为今天的双分类开源榜单写一段「本期看点」。\n"
+    "榜单分「金融与量化」和「道术 · 玄学术数」两类，"
+    "每类按透明质量分从长期积累的项目里轮播精选，不追新。\n"
+    "基于给定的真实数据（分类、项目名、收藏数、质量分、标签、描述），"
+    "用 2-3 句话分别点出两类项目各自在解决什么问题。\n\n"
     "要求：\n"
-    "- 必须有具体依据，至少提到一个真实项目名或真实数字，不要写「都在让 AI 更强大」这类空话\n"
-    "- 不做预测、不喊口号、不编造趋势结论\n"
+    "- 必须有具体依据，两个分类都要提到，至少出现两个真实项目名或真实数字，"
+    "不要写「都在让工具更好用」这类空话\n"
+    "- 不做预测、不喊口号、不编造趋势结论、不写「新晋/刚火/暴涨」\n"
     f"{STYLE_RULES}\n"
     "- 80-150 字，直接输出正文，不要标题、不要「本期看点」前缀"
 )
@@ -75,7 +85,7 @@ def research(repo: dict, readme: str, config) -> str:
 
 def _llm_summarize(repo: dict, readme: str, config) -> str:
     user_prompt = (
-        f"仓库：{repo['full_name']}\n{_meta_block(repo)}\n\n"
+        f"仓库：{repo['full_name']}\n{_meta_block(repo, config)}\n\n"
         f"README（节选）：\n{readme[:3000] if readme else '（无 README）'}\n\n"
         "请按指定结构输出中文速览。"
     )
@@ -116,19 +126,36 @@ def _days_since(created_at: str) -> str:
         return "未知"
 
 
-def _meta_block(repo: dict) -> str:
+def _category_label(key: str, config=None) -> str:
+    for c in getattr(config, "CATEGORIES", []) or []:
+        if c.get("key") == key:
+            return c.get("label", key)
+    return key or "未分类"
+
+
+def _meta_block(repo: dict, config=None) -> str:
+    """给 LLM 的真实数据块：元信息 + 质量分分项，判断必须有据可查。"""
     stars = repo.get("stargazers_count", 0)
     forks = repo.get("forks_count", 0)
-    return (
-        f"- 官方描述：{repo.get('description') or '无'}\n"
-        f"- 主语言：{repo.get('language') or '未标注'}\n"
-        f"- 收藏数：{stars:,}\n"
-        f"- 被复制数：{forks:,}\n"
-        f"- 创建至今：{_days_since(repo.get('created_at'))}（本项目只收录近 7 天新建仓库）\n"
-        f"- 使用许可：{(repo.get('license') or {}).get('name') or '未标注'}\n"
-        f"- 标签：{', '.join(repo.get('topics', [])) or '无'}\n"
-        f"- 最近更新：{repo.get('pushed_at', '未知')}"
-    )
+    score = repo.get("_score") or {}
+    lines = [
+        f"- 所属分类：{repo.get('category_label') or _category_label(repo.get('category'), config)}",
+        f"- 官方描述：{repo.get('description') or '无'}",
+        f"- 主语言：{repo.get('language') or '未标注'}",
+        f"- 累计收藏：{stars:,}",
+        f"- 被复制数：{forks:,}",
+        f"- 创建至今：{_days_since(repo.get('created_at'))}（长期积累项目，不按创建时间筛选）",
+        f"- 使用许可：{(repo.get('license') or {}).get('name') or '未标注'}",
+        f"- 标签：{', '.join(repo.get('topics', [])) or '无'}",
+        f"- 最近更新：{repo.get('pushed_at') or '未知'}",
+    ]
+    if score:
+        lines.extend([
+            f"- 综合质量分：{score.get('total')}/100",
+            f"- 评分分项与依据：{score.get('evidence')}",
+            f"- 评分口径：{score.get('formula')}",
+        ])
+    return "\n".join(lines)
 
 
 def generate_overview(repos: list, config) -> str:
@@ -137,8 +164,9 @@ def generate_overview(repos: list, config) -> str:
         return ""
     try:
         repo_lines = "\n".join(
-            f"- {r['full_name']}｜{r.get('stargazers_count', 0):,} 收藏｜"
-            f"{r.get('forks_count', 0):,} 次复制｜"
+            f"- {r.get('category_label') or _category_label(r.get('category'), config)}"
+            f"｜{r['full_name']}｜{r.get('stargazers_count', 0):,} 收藏｜"
+            f"{(r.get('_score') or {}).get('total', '未评分')}/100 分｜"
             f"标签：{', '.join(r.get('topics', [])) or '无'}｜"
             f"描述：{r.get('description') or '无'}"
             for r in repos
@@ -176,6 +204,9 @@ def _fallback(repo: dict, readme: str, note: str = "") -> str:
             if is_en else f"{desc.strip('。.')}。")
     stars = repo.get("stargazers_count", 0)
     days = _days_since(repo.get("created_at"))
+    score = repo.get("_score") or {}
+    basis = (score.get("evidence") or
+             f"累计 {stars:,} 收藏，创建至今 {days}")
     return (
         f"**这是什么**\n{what}\n\n"
         f"**能做什么**\n"
@@ -183,6 +214,6 @@ def _fallback(repo: dict, readme: str, note: str = "") -> str:
         "- 本次未能生成自动简介，建议直接查看主页确认能力范围。\n\n"
         f"**上手难不难**\n需要按主页说明安装和配置，具体步骤以项目文档为准。\n\n"
         f"**谁最适合用**\n遇到该类问题、并愿意自行部署工具的人。\n\n"
-        f"**为什么值得关注**\n创建至今 {days}，已积累 {stars:,} 收藏，"
-        f"是近一周新出现的受关注项目。{note}"
+        f"**为什么值得关注**\n{basis}。创建至今 {days}，"
+        f"属于长期积累的同类项目，本榜按透明质量分轮播收录，不追新。{note}"
     )

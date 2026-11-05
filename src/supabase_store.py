@@ -6,6 +6,10 @@
 
 幂等：按 article_date / (article_date, full_name) upsert，同日重跑不产生重复。
 表结构由 Management API 的一次性初始化脚本建立（见 scripts/init_supabase.py）。
+
+双分类与质量分无需改表：写进已有的 sections JSONB（分类、综合质量分、
+评分依据、评分分项）与 raw JSONB（完整仓库元数据），
+PostgREST 可用 sections->>'分类' 直接过滤。
 """
 
 import os
@@ -102,6 +106,15 @@ def persist(article_date: str, title: str, overview: str, items: list,
         # 2) 项目明细（upsert 按 日期+仓库名）
         rows = []
         for i, (repo, summary) in enumerate(items, 1):
+            sections = parse_sections(summary)
+            sections["分类"] = (repo.get("category_label")
+                               or repo.get("category") or "未分类")
+            sections["分类标识"] = repo.get("category") or ""
+            score = repo.get("_score") or {}
+            if score:
+                sections["综合质量分"] = score.get("total")
+                sections["评分依据"] = score.get("evidence")
+                sections["评分分项"] = score.get("parts")
             rows.append({
                 "article_date": article_date,
                 "full_name": repo["full_name"],
@@ -113,7 +126,7 @@ def persist(article_date: str, title: str, overview: str, items: list,
                 "license": (repo.get("license") or {}).get("name"),
                 "topics": repo.get("topics", []),
                 "summary": summary,
-                "sections": parse_sections(summary),
+                "sections": sections,
                 "raw": repo,
             })
         _postgrest(
