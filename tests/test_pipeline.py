@@ -125,19 +125,22 @@ class TestStore(unittest.TestCase):
 class TestArticle(unittest.TestCase):
     def test_build_contains_sections(self):
         items = [(_repo("a/b", 1234), SUMMARY)]
-        md = article.build_article(items, "2026-11-05", "本期看点测试")
-        self.assertIn("金融与量化", md)
+        md = article.build_article(items, "2026-11-05", "今日一瞥")
+        self.assertIn("## 数", md)          # 栏目只用一个字，不写专业分类名
         self.assertIn("### 01", md)
-        self.assertIn("本期看点", md)
+        self.assertIn("今日一瞥", md)
         self.assertIn("**这是什么**", md)
         self.assertIn("https://github.com/a/b", md)
-        self.assertIn("收藏", md)
-        self.assertIn("评分口径", md)
+        self.assertIn("人收藏", md)
+        self.assertIn("**", md)
+        # 读者看到的内容里不出现幕后过程与指标
+        for banned in ("评分口径", "综合质量分", "评分依据", "本榜", "筛选"):
+            self.assertNotIn(banned, md)
 
     def test_summary_before_technical_details(self):
         items = [(_repo("a/b", 1234), SUMMARY)]
         md = article.build_article(items, "2026-11-05")
-        self.assertLess(md.index("**这是什么**"), md.index("项目主页"))
+        self.assertLess(md.index("**这是什么**"), md.index("项目页"))
 
     def test_save_filename_uses_date(self):
         with tempfile.TemporaryDirectory() as d:
@@ -149,7 +152,8 @@ class TestSite(unittest.TestCase):
     def _cfg(self, d):
         class C:
             SITE_DIR = d
-            SITE_TITLE = "GitHub 双榜 · 金融与道术"
+            SITE_TITLE = "两仪"
+            SITE_TAGLINE = "一边算得清，一边算不尽。"
             CATEGORIES = config.CATEGORIES
             PER_CATEGORY = config.PER_CATEGORY
             DAYS_BACK = 7
@@ -161,8 +165,9 @@ class TestSite(unittest.TestCase):
         tmp = tempfile.mkdtemp()
         h = store.load(os.path.join(tmp, "h.json"))
         items = [(_repo("a/b", 1234), SUMMARY)]
-        md = article.build_article(items, "2026-11-05", "看点")
-        files = site.render_site(h, items, "看点", "2026-11-05", md, self._cfg(tmp))
+        md = article.build_article(items, "2026-11-05", "今日一瞥")
+        files = site.render_site(h, items, "今日一瞥", "2026-11-05", md,
+                                 self._cfg(tmp))
 
         for p in (files["index"], files["html"], files["md"]):
             self.assertTrue(os.path.exists(p))
@@ -173,22 +178,26 @@ class TestSite(unittest.TestCase):
             page = f.read()
         self.assertIn("a/b", page)
         self.assertIn('class="section"', page)
-        self.assertIn("本期看点", page)
+        self.assertIn("今日一瞥", page)
         self.assertIn("自动归拢文件", page)
         self.assertIn("<!DOCTYPE html>", page)
         self.assertNotIn("{css}", page)
         self.assertNotIn("⭐", page)          # 禁 emoji
         self.assertIn('class="bar"', page)    # 真实数据条形
         self.assertIn('id="cat-finance"', page)
-        self.assertIn("筛选与评分口径", page)
-        self.assertIn("综合质量分 = 累计收藏(40)", page)
-        self.assertIn("不追新", page)
-        self.assertNotIn("近 7 天新晋", page)
+        self.assertIn('id="cat-daoshu"', page)
+        self.assertIn("两仪", page)
+        self.assertIn("一边算得清", page)
+        # 页面不出现幕后过程与指标口径
+        for banned in ("筛选与评分口径", "综合质量分", "不追新", "轮播",
+                       "自动生成", "GitHub 公共接口"):
+            self.assertNotIn(banned, page)
 
         with open(os.path.join(tmp, "feed.json"), encoding="utf-8") as f:
             feed = json.load(f)
         self.assertEqual(feed["latest"], "2026-11-05")
         self.assertEqual(len(feed["categories"]), 2)
+        self.assertEqual(feed["site"], "两仪")
 
     def test_design_system_constraints(self):
         """反通用设计约束：单一强调色、无霓虹、等宽数字、动效克制。"""
@@ -207,8 +216,8 @@ class TestSite(unittest.TestCase):
         self.assertIn('aria-labelledby="p1-title"', html)
         self.assertIn('class="metric"', html)
         self.assertIn('<details class="tech"', html)
-        self.assertIn("项目详情（给懂技术的人）", html)
-        self.assertLess(html.index("这是什么"), html.index("项目详情"))
+        self.assertIn("再看一点", html)
+        self.assertLess(html.index("这是什么"), html.index("再看一点"))
         self.assertIn("新窗口打开", html)
         self.assertIn("skip", site._head("t"))
 
@@ -239,13 +248,16 @@ class TestSite(unittest.TestCase):
         self.assertIn("<nav", block)
 
     def test_overview_placeholder_when_empty(self):
+        """没有题记时留白，不塞占位说明文字。"""
         tmp = tempfile.mkdtemp()
         h = store.load(os.path.join(tmp, "h.json"))
         items = [(_repo("a/b", 100), SUMMARY)]
         md = article.build_article(items, "2026-11-05")
         f = site.render_site(h, items, "", "2026-11-05", md, self._cfg(tmp))
         with open(f["index"], encoding="utf-8") as fp:
-            self.assertIn("本期看点整理中", fp.read())
+            page = fp.read()
+        self.assertNotIn("今日一瞥", page)
+        self.assertIn('class="hero"', page)
 
     def test_placeholder_uses_same_design(self):
         tmp = tempfile.mkdtemp()
@@ -253,8 +265,9 @@ class TestSite(unittest.TestCase):
         with open(path, encoding="utf-8") as f:
             page = f.read()
         self.assertIn("class=\"topbar\"", page)
-        self.assertIn("各自成榜", page)
-        self.assertIn("不追新", page)
+        self.assertIn("两仪", page)
+        self.assertIn("一边算得清", page)
+        self.assertNotIn("双榜", page)
 
     def test_fallback_is_professional(self):
         from src import researcher

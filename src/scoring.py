@@ -172,6 +172,40 @@ def score_repo(repo: dict, now: datetime = None) -> dict:
             "formula": FORMULA}
 
 
+def score_text(repo: dict) -> str:
+    """给读者看的一个数字，不带满分、不带权重。"""
+    score = repo.get("_score") or {}
+    return f"{round(score.get('total', 0))} 分" if score else ""
+
+
+def plain_evidence(repo: dict, with_stars: bool = True) -> str:
+    """把评分依据写成一句人话：只说事实，不提指标、公式与筛选过程。
+
+    with_stars=False 用于分数旁边——收藏数就在同一行，不必重复一遍。
+    """
+    score = repo.get("_score") or {}
+    parts = score.get("parts") or {}
+    bits = []
+    if with_stars:
+        bits.append(f"{repo.get('stargazers_count', 0):,} 人收藏")
+    activity = parts.get("activity") or {}
+    days = activity.get("value")
+    if days is None or activity.get("score", 0) == 0:
+        bits.append("更新情况不明")
+    elif days <= 90:
+        bits.append("近来仍在更新")
+    else:
+        bits.append(f"上次更新在 {days} 天前")
+    docs = parts.get("docs") or {}
+    if docs.get("score", 0) >= 12:
+        bits.append("说明与许可齐全")
+    elif (repo.get("description") or "").strip():
+        bits.append("有说明")
+    if not bits:
+        bits.append("公开信息不多")
+    return "，".join(bits) + "。"
+
+
 def group_items(items: list, categories: list) -> list:
     """按分类顺序把 [(repo, summary)] 分组，返回 [(category, items), ...]。
 

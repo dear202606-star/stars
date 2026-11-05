@@ -1,4 +1,4 @@
-name: 每日 GitHub 双榜 · 金融与道术
+name: 两仪 · 每日一页
 
 on:
   schedule:
@@ -92,7 +92,7 @@ jobs:
           else
             git -c user.name="github-actions[bot]" \
                 -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-                commit -m "chore: 每日双榜自动生成 $(date -u +%F)"
+                commit -m "chore: 两仪 · 每日一页 $(date -u +%F)"
             git push
           fi
 

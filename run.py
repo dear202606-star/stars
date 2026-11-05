@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""GitHub 双分类每日精选生成器（金融与量化 / 道术玄学术数）。
+"""两仪 · 每日一页：分「数」「象」两栏的开源项目精选。
 
 全链路：按分类检索存量项目 -> 透明质量分 -> 按分类轮播去重 -> README 抓取
-      -> LLM 平实中文速览 -> Markdown 文章 -> 静态站点(GitHub Pages)
+      -> LLM 短札 -> Markdown 文章 -> 静态站点(GitHub Pages)
       -> JSON 历史 + Supabase 持久化(幂等)。
 
 不做「近 7 天新晋」过滤：垂类每日新项目供给不足，改从长期积累的项目库
@@ -36,7 +36,7 @@ def _article_date(config, override: str = None) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="生成 GitHub 双分类每日精选")
+    parser = argparse.ArgumentParser(description="生成两仪 · 每日一页")
     parser.add_argument("--date", default=None,
                         help="文章日期 YYYY-MM-DD，默认按配置时区取今天")
     parser.add_argument("--top", "--per-category", dest="per", type=int,
@@ -54,30 +54,35 @@ def main():
     if args.no_llm:
         config.LLM_ENABLED = False
 
-    print(f"=== GitHub 双榜 · 金融与道术 | 每类 {per} 个 | {article_date} "
+    print(f"=== {config.SITE_TITLE} | 每栏 {per} 则 | {article_date} "
           f"(UTC+{config.TZ_OFFSET_HOURS}) ===")
 
     print("[1/7] 按分类检索 GitHub 存量项目（不按创建时间过滤）...")
-    try:
-        pools = github_client.fetch_candidates(config)
-    except github_client.AuthError as e:
-        print(f"[错误] {e}")
-        sys.exit(3)
-    except github_client.RateLimitError as e:
-        print(f"[错误] {e}")
-        sys.exit(2)
-    for cat in categories:
-        print(f"      {cat['label']}：候选 "
-              f"{len(pools.get(cat['key'], []))} 个"
-              f"（门槛 收藏 > {cat['min_stars']}，已过滤列表/教程类）")
-
-    print("[2/7] 计算透明质量分并按分类轮播去重")
     history = store.load(config.HISTORY_FILE)
     cached = store.get_day_selection(history, article_date)
-    if cached and len(cached) == expected:
-        # 同日重跑（失败重试 / 手动触发）复用同一批项目，保证文章稳定可复现
+    # 同日重跑（失败重试 / 手动触发）复用同一批项目：
+    # 既保证文章稳定可复现，也不必再消耗检索配额、不受 token 失效影响
+    reuse = bool(cached) and len(cached) == expected
+    if reuse:
+        print(f"      同日重跑，复用已选定的 {len(cached)} 个项目，跳过检索")
+        pools = {}
+    else:
+        try:
+            pools = github_client.fetch_candidates(config)
+        except github_client.AuthError as e:
+            print(f"[错误] {e}")
+            sys.exit(3)
+        except github_client.RateLimitError as e:
+            print(f"[错误] {e}")
+            sys.exit(2)
+        for cat in categories:
+            print(f"      {cat['label']}：候选 "
+                  f"{len(pools.get(cat['key'], []))} 个"
+                  f"（门槛 收藏 > {cat['min_stars']}，已过滤列表/教程类）")
+
+    print("[2/7] 计算透明质量分并按分类轮播去重")
+    if reuse:
         selected = cached
-        print(f"      同日重跑，复用已选定的 {len(selected)} 个项目")
     else:
         selected, chosen = [], set()
         for cat in categories:
@@ -153,7 +158,7 @@ def main():
     print("[5/7] 生成静态站点")
     store.mark_recommended(history, selected, article_date,
                            config.TZ_OFFSET_HOURS)
-    title = f"GitHub 双榜 · 金融与道术（{article_date}）"
+    title = f"{config.SITE_TITLE} · {article_date}"
     if not args.no_site:
         # 必须先登记文章索引，再渲染站点，否则 feed.json / 归档会漏掉当期
         store.upsert_post(history, article_date, title, len(items),

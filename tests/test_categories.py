@@ -292,7 +292,8 @@ class TestScoreIsVisible(unittest.TestCase):
     def _cfg(self, d):
         class C:
             SITE_DIR = d
-            SITE_TITLE = "GitHub 双榜 · 金融与道术"
+            SITE_TITLE = "两仪"
+            SITE_TAGLINE = "一边算得清，一边算不尽。"
             CATEGORIES = config.CATEGORIES
             PER_CATEGORY = 3
             TZ_OFFSET_HOURS = 8
@@ -302,24 +303,30 @@ class TestScoreIsVisible(unittest.TestCase):
     def test_article_and_site_show_score_and_evidence(self):
         items = [(_repo("fin/a", 2000, "finance"), SUMMARY),
                  (_repo("dao/b", 80, "daoshu"), SUMMARY)]
-        md = article.build_article(items, "2026-11-05", "看点", config)
-        self.assertIn("综合质量分", md)
-        self.assertIn("评分依据：", md)
-        self.assertIn("2,000 收藏", md)
-        self.assertIn("## 道术 · 玄学术数", md)
+        md = article.build_article(items, "2026-11-05", "今日一瞥", config)
+        # 读者只看到一个分数与一句人话依据
+        self.assertIn("分**", md)
+        self.assertIn("人收藏", md)
+        self.assertIn("## 数", md)
+        self.assertIn("## 象", md)
+        for banned in ("综合质量分", "评分依据", "评分口径", "分项"):
+            self.assertNotIn(banned, md)
 
         with tempfile.TemporaryDirectory() as d:
             files = site.render_site(store.load(os.path.join(d, "h.json")),
-                                     items, "看点", "2026-11-05", md,
+                                     items, "今日一瞥", "2026-11-05", md,
                                      self._cfg(d))
             with open(files["index"], encoding="utf-8") as f:
                 page = f.read()
         self.assertEqual(page.count('class="score"'), 2)
-        self.assertIn("评分依据：", page)
         self.assertIn('id="cat-finance"', page)
         self.assertIn('id="cat-daoshu"', page)
-        self.assertIn("累计收藏", page)
-        self.assertIn("最近维护", page)
+        self.assertIn("收藏", page)
+        self.assertIn("近来仍在更新", page)
+        # 分数旁边的依据不再重复收藏数（同一行已经显示过）
+        self.assertNotIn("人收藏", page)
+        for banned in ("综合质量分", "评分依据", "筛选与评分口径", "不追新"):
+            self.assertNotIn(banned, page)
 
 
 class TestMobileCompatibility(unittest.TestCase):
@@ -339,19 +346,18 @@ class TestMobileCompatibility(unittest.TestCase):
         self.assertNotIn(".jump{display:none}", tablet)
         self.assertIn(".num-link{display:none}", tablet)
         self.assertIn("justify-content:flex-end", tablet)
-        nav = site._topbar("GitHub 双榜 · 金融与道术", [None] * 2,
+        nav = site._topbar("两仪", [None] * 2,
                            "2026-11-05", False, config.CATEGORIES)
         self.assertIn('class="cat-link"', nav)
         self.assertIn('class="num-link"', nav)
         self.assertIn("#cat-finance", nav)
         self.assertIn("#cat-daoshu", nav)
-        self.assertIn('title="GitHub 双榜 · 金融与道术"', nav)
+        self.assertIn('title="两仪"', nav)
 
     def test_all_multi_column_blocks_collapse_on_phone(self):
         phone = self._block(640)
         for frag in (".entry{grid-template-columns:1fr",
                      ".cat-head{grid-template-columns:1fr",
-                     ".method dl{grid-template-columns:1fr",
                      ".section{grid-template-columns:1fr",
                      ".live{display:none}",
                      ".tools a{display:inline-flex"):
@@ -365,15 +371,15 @@ class TestMobileCompatibility(unittest.TestCase):
         self.assertIn('name="viewport" content="width=device-width,initial-scale=1"',
                       site._head("t"))
 
-    def test_article_score_lines_are_short_for_phone(self):
-        """评分依据按分项拆行，避免手机上出现一整屏长的单行数字。"""
+    def test_article_evidence_lines_are_short_for_phone(self):
+        """依据写成一句短话，手机上不用读一长串数字。"""
         items = [(_repo("fin/a", 2000, "finance"), SUMMARY)]
         md = article.build_article(items, "2026-11-05", "", config)
-        score_lines = [ln for ln in md.splitlines() if ln.startswith("> - ")]
-        self.assertEqual(len(score_lines), 4)
-        self.assertTrue(all(len(ln) < 60 for ln in score_lines))
-        self.assertIn("累计收藏", md)
-        self.assertIn("最近维护", md)
+        quote_lines = [ln for ln in md.splitlines() if ln.startswith("> ")]
+        self.assertTrue(quote_lines)
+        self.assertTrue(all(len(ln) < 60 for ln in quote_lines))
+        self.assertIn("人收藏", md)
+        self.assertIn("近来仍在更新", md)
 
 
 if __name__ == "__main__":

@@ -65,16 +65,17 @@ class TestEndToEnd(unittest.TestCase):
 
                 self._run_main("2026-11-05", 3)
 
-                # Markdown 产物含双分类与评分依据
+                # Markdown 产物含两栏与一句人话依据
                 with open(os.path.join(out_dir, "2026-11-05.md"),
                           encoding="utf-8") as f:
                     md = f.read()
-                self.assertIn("## 金融与量化", md)
-                self.assertIn("## 道术 · 玄学术数", md)
-                self.assertIn("综合质量分", md)
-                self.assertIn("评分依据", md)
-                self.assertIn("评分口径", md)
+                self.assertIn("## 数", md)
+                self.assertIn("## 象", md)
+                self.assertIn("人收藏", md)
+                self.assertIn("分**", md)
                 self.assertNotIn("近 7 天", md)
+                self.assertNotIn("评分口径", md)
+                self.assertNotIn("综合质量分", md)
 
                 # 站点产物
                 for rel in ("index.html", "style.css", ".nojekyll",
@@ -87,9 +88,11 @@ class TestEndToEnd(unittest.TestCase):
                 self.assertIn('id="cat-finance"', html)
                 self.assertIn('id="cat-daoshu"', html)
                 self.assertIn('class="score"', html)
-                self.assertIn("筛选与评分口径", html)
+                self.assertIn("今日一瞥", html)
                 self.assertIn("fin/repo0", html)
                 self.assertIn("dao/repo0", html)
+                self.assertNotIn("筛选与评分口径", html)
+                self.assertNotIn("不追新", html)
 
                 # 历史：每类 3 个，共 6 个，且带分类
                 with open(hist, encoding="utf-8") as f:

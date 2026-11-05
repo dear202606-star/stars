@@ -1,4 +1,4 @@
-# GitHub 双分类每日精选（金融与量化 / 道术玄学术数）配置
+# 两仪 · 每日一页（分「数」「象」两栏）配置
 # 优先级：系统环境变量(CI 注入) > .env 文件 > 代码默认值
 
 import os
@@ -41,6 +41,8 @@ CATEGORIES = [
     {
         "key": "finance",
         "label": "金融与量化",
+        "display": "数",
+        "note": "行情、账目、投资组合",
         "tab": "金融",
         "desc": "量化交易、行情数据、投资组合、Fintech 与链上金融",
         "min_stars": _env_int("FINANCE_MIN_STARS", 500),
@@ -58,6 +60,8 @@ CATEGORIES = [
     {
         "key": "daoshu",
         "label": "道术 · 玄学术数",
+        "display": "象",
+        "note": "八字、历法、占卜与塔罗",
         "tab": "道术",
         "desc": "八字、紫微斗数、风水、易经、占卜与塔罗等术数工具",
         "min_stars": _env_int("DAOSHU_MIN_STARS", 5),
@@ -115,6 +119,7 @@ HISTORY_FILE = os.environ.get(
     "HISTORY_FILE", os.path.join(DATA_DIR, "history.json"))
 
 # ---------- 文章配置 ----------
-ARTICLE_AUTHOR = os.environ.get("ARTICLE_AUTHOR", "GitHub 双榜")
-SITE_TITLE = os.environ.get("SITE_TITLE", "GitHub 双榜 · 金融与道术")
+ARTICLE_AUTHOR = os.environ.get("ARTICLE_AUTHOR", "两仪")
+SITE_TITLE = os.environ.get("SITE_TITLE", "两仪")
+SITE_TAGLINE = os.environ.get("SITE_TAGLINE", "一边算得清，一边算不尽。")
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "")

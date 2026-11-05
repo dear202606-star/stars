@@ -1,12 +1,12 @@
-"""静态站点生成器：把每期双分类文章渲染成 GitHub Pages 可用的 HTML。
+"""静态站点生成器：把每期文章渲染成 GitHub Pages 可用的 HTML。
 
 设计语言：编辑部式科技榜单（Editorial Terminal）
 - Zinc/Off-Black 中性底 + 单一青柠强调色，无霓虹、无紫蓝、无 emoji
 - 等宽字体承载所有数字与元信息；非对称 Hero；细线分隔替代卡片堆叠
-- 真实数据可视化（收藏数相对条形 + 质量分分项），不编造任何指标
-- 两个垂直分类各自成栏，评分口径在页面上公开可复核
+- 真实数据可视化（收藏数相对条形 + 一个分数与一句人话依据），不编造任何指标
+- 分「数」「象」两栏各自成篇；页面上不出现筛选、打分、收录等幕后过程
 - 动效只使用 transform / opacity，尊重 prefers-reduced-motion
-- 读者是不懂技术的普通人：人话简介在前，技术细节折叠在后
+- 读者是不懂技术的普通人：人话简介在前，少许元信息折叠在后
 """
 
 import html
@@ -52,8 +52,8 @@ a:hover{text-decoration-color:var(--accent)}
  padding:12px 18px;z-index:60;border:1px solid var(--line-2)}
 .skip:focus{left:16px;top:16px}
 .mono,.num,.metric,.stat-v,.eyebrow,.tag,.jump,.live,.facts,.archive,.tools,
-.rank-head span,.stat-note,.pager,.score,.cat-idx,.cat-meta,.method,
-.score-total,.method dt{font-family:var(--font-m);font-variant-numeric:tabular-nums}
+.rank-head span,.stat-note,.pager,.cat-idx,.cat-meta,
+.score-total,.score-u{font-family:var(--font-m);font-variant-numeric:tabular-nums}
 
 /* 顶栏：细线 + 期数锚点 + 状态点 */
 .topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
@@ -115,25 +115,14 @@ h1 em{font-style:normal;color:var(--accent)}
 .cat-meta{font-size:.7rem;color:var(--muted);white-space:nowrap}
 .cat .list{margin-top:6px}
 
-/* 质量分：四项分项常驻，依据可在「项目详情」里展开复核 */
-.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;
+/* 分数与一句人话的依据并排，不列指标、不写口径 */
+.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;
  margin:0 0 20px;padding:12px 0;border-top:1px solid var(--line);
- border-bottom:1px solid var(--line);font-size:.74rem;color:var(--muted);
- min-width:0;overflow-wrap:anywhere}
-.score-label{letter-spacing:.14em;text-transform:uppercase}
-.score-total{font-size:1.1rem;font-weight:600;color:var(--accent);
- letter-spacing:-.03em}
-.score-item b{color:var(--ink);font-weight:500}
-.score-full{flex-basis:100%;font-size:.72rem;line-height:1.7;color:var(--muted)}
-.method{margin:clamp(38px,6vw,72px) 0 0;padding:26px 0 0;
- border-top:1px solid var(--ink);font-size:.78rem;line-height:1.85;color:var(--muted)}
-.method h2{font-family:var(--font-d);font-size:1.02rem;font-weight:600;
- margin:0 0 12px;color:var(--ink)}
-.method dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);
- gap:6px 20px}
-.method dt{color:var(--ink);white-space:nowrap}
-.method dd{margin:0;min-width:0;overflow-wrap:anywhere}
-.method p{margin:12px 0 0}
+ border-bottom:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.score-total{font-size:1.35rem;font-weight:600;color:var(--accent);
+ letter-spacing:-.04em;line-height:1}
+.score-u{font-family:var(--font-m);font-size:.72rem;color:var(--muted)}
+.score-note{font-size:.84rem;line-height:1.7;color:var(--muted)}
 
 /* 榜单：细线分隔，条目带相对收藏数条形 */
 .rank-head{display:flex;justify-content:space-between;align-items:baseline;
@@ -238,13 +227,12 @@ footer{padding:26px 0 54px;border-top:1px solid var(--line);
  .entry-head{gap:8px}
  .section{grid-template-columns:1fr;gap:5px;padding:12px 0}
  .section h4{padding-top:0}
- .score{gap:6px 12px;font-size:.7rem}
- .score-total{font-size:1rem}
+ .score{gap:6px 10px}
+ .score-total{font-size:1.15rem}
+ .score-note{font-size:.8rem}
  .cat-head{grid-template-columns:1fr;gap:6px}
  .cat-meta{grid-column:1;white-space:normal}
  .cat{scroll-margin-top:72px}
- .method dl{grid-template-columns:1fr;gap:2px}
- .method dt{margin-top:8px;white-space:normal}
  .pager a{flex:1 1 100%;justify-content:center}
  .tools{flex-wrap:wrap}
  .tools a{display:inline-flex;align-items:center;min-height:44px}
@@ -332,21 +320,16 @@ def render_summary(summary: str) -> str:
 
 
 def _score_block(repo: dict) -> str:
-    """常驻展示四项分项得分，读者能直接看到「评价好」是怎么算出来的。"""
+    """一个分数加一句人话依据，不列指标、不解释算法。"""
     score = repo.get("_score") or {}
     if not score:
         return ""
-    parts = score.get("parts") or {}
-    rows = "".join(
-        f'<span class="score-item">{_esc(scoring.label(k))} '
-        f'<b>{p.get("score", 0):.1f}</b>/{p.get("max", 0)}</span>'
-        for k, p in parts.items()
-    )
     return (
-        '<div class="score" aria-label="综合质量分与分项得分">'
-        '<span class="score-label">质量分</span>'
-        f'<span class="score-total">{score.get("total", 0)}/100</span>'
-        f'{rows}</div>'
+        '<div class="score" aria-label="分数与依据">'
+        f'<span class="score-total">{round(score.get("total", 0))}</span>'
+        '<span class="score-u">分</span>'
+        f'<span class="score-note">{_esc(scoring.plain_evidence(repo, False))}</span>'
+        '</div>'
     )
 
 
@@ -361,39 +344,44 @@ def _render_card(idx: int, repo: dict, summary: str, max_stars: int = 1) -> str:
     topics = ", ".join(repo.get("topics", [])) or "无"
     pct = max(0.04, stars / max_stars) if max_stars else 1
     cid = f"p{idx}"
-    evidence = (repo.get("_score") or {}).get("evidence") or ""
-    evidence_li = f'<li>评分依据：{_esc(evidence)}</li>' if evidence else ""
     return (
         f'<li class="entry" id="{cid}" aria-labelledby="{cid}-title" '
         f'style="--i:{idx-1};--pct:{pct:.4f}">\n'
         f'<div class="entry-rail"><span class="num" aria-hidden="true">{idx:02d}</span>'
-        f'<div class="bar" role="img" aria-label="收藏数相对本期最高项目：{pct*100:.0f}%">'
+        f'<div class="bar" role="img" aria-label="收藏相对值 {pct*100:.0f}%">'
         f'<i></i></div></div>\n'
         f'<div class="entry-body">\n'
         f'<header class="entry-head">'
         f'<h3 id="{cid}-title"><a href="{_esc(url)}" target="_blank" rel="noopener" '
-        f'aria-label="在新窗口打开 GitHub 项目页：{_esc(full)}">{_esc(full)}</a></h3>'
+        f'aria-label="在新窗口打开项目页：{_esc(full)}">{_esc(full)}</a></h3>'
         f'<div class="metric"><span class="metric-v">{stars:,}</span>'
         f'<span class="metric-u">收藏</span></div></header>\n'
         f'{_score_block(repo)}\n'
         f'<div class="summary">{render_summary(summary)}</div>\n'
-        f'<details class="tech"><summary>项目详情（给懂技术的人）</summary>\n'
+        f'<details class="tech"><summary>再看一点</summary>\n'
         f'<ul class="facts">'
         f'<li><a href="{_esc(url)}" target="_blank" rel="noopener">'
-        f'在新窗口打开项目页</a></li>'
-        f'<li>主语言：{_esc(lang)} ｜ 被复制 {forks:,} 次 ｜ 使用许可：{_esc(lic)}</li>'
-        f'<li>项目标签：{_esc(topics)}</li>'
-        f'{evidence_li}'
-        f'<li>仓库地址（可复制）：{_esc(url)}</li>'
+        f'去项目页看看</a></li>'
+        f'<li>{_esc(lang)}　·　被复制 {forks:,} 次　·　{_esc(lic)}</li>'
+        f'<li>标签：{_esc(topics)}</li>'
         f'</ul></details>\n</div></li>'
     )
 
 
-def _head(title: str, css_path: str = "style.css", og_url: str = "") -> str:
+def _brand_head(site_title: str) -> str:
+    """品牌名做单行大标题，末字交给强调色。"""
+    if len(site_title) > 1:
+        return f'{_esc(site_title[0])}<em>{_esc(site_title[1:])}</em>'
+    return f'<em>{_esc(site_title)}</em>'
+
+
+def _head(title: str, css_path: str = "style.css", og_url: str = "",
+          tagline: str = "") -> str:
+    tagline = tagline or "一边算得清，一边算不尽。"
     og = ""
     if og_url:
         og = (f'<meta property="og:title" content="{_esc(title)}">\n'
-              f'<meta property="og:description" content="每天从金融与量化、道术玄学术数两个分类里，按透明质量分精选开源项目，用平实中文讲清楚">\n'
+              f'<meta property="og:description" content="{_esc(tagline)}">\n'
               f'<meta property="og:url" content="{_esc(og_url)}">\n')
     fonts = (
         '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
@@ -408,7 +396,7 @@ def _head(title: str, css_path: str = "style.css", og_url: str = "") -> str:
         '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
         '<meta name="color-scheme" content="light dark">\n'
         f'<title>{_esc(title)}</title>\n'
-        f'<meta name="description" content="{_esc(title)} - 每天从金融与量化、道术玄学术数两个分类里，按透明质量分精选开源项目，用平实中文讲清楚">\n'
+        f'<meta name="description" content="{_esc(tagline)}">\n'
         f'{og}{fonts}<link rel="stylesheet" href="{css_path}">\n'
         '</head>\n<body>\n<a class="skip" href="#main">跳到正文</a>\n'
     )
@@ -432,8 +420,8 @@ def _topbar(site_title: str, items: list, current_date: str,
         '<header class="topbar"><div class="shell topbar-inner">'
         f'<a class="brand" href="{root}" title="{_esc(site_title)}">'
         f'{_esc(site_title)}</a>'
-        f'<nav class="jump" aria-label="本期分类与项目导航">{jump}</nav>'
-        '<span class="live"><i aria-hidden="true"></i>每日轮播 · 不追新</span>'
+        f'<nav class="jump" aria-label="栏目导航">{jump}</nav>'
+        '<span class="live"><i aria-hidden="true"></i>每日一页</span>'
         '</div></header>'
     )
 
@@ -445,11 +433,11 @@ def _archive_block(history: dict, current_date: str) -> str:
     items = "".join(
         f'<li><a href="posts/{_esc(p["date"])}.html">'
         f'<span>{_esc(p.get("date", ""))} · {_esc(p.get("title") or "往期文章")}</span>'
-        f'<span class="cnt">{p.get("count", "?")} 个项目</span></a></li>'
+        f'<span class="cnt">{p.get("count", "?")} 则</span></a></li>'
         for p in posts[:60]
     )
-    return ('<nav class="archive" aria-label="往期文章">'
-            '<h2>往期回顾</h2><ul>' + items + '</ul></nav>')
+    return ('<nav class="archive" aria-label="往期">'
+            '<h2>往期</h2><ul>' + items + '</ul></nav>')
 
 
 def _pager(history: dict, current_date: str) -> str:
@@ -462,91 +450,58 @@ def _pager(history: dict, current_date: str) -> str:
     older = posts[idx + 1] if idx + 1 < len(posts) else None
     parts = []
     if newer:
-        parts.append(f'<a href="posts/{_esc(newer["date"])}.html">← 新一期 {_esc(newer["date"])}</a>')
+        parts.append(f'<a href="posts/{_esc(newer["date"])}.html">← 新一页 {_esc(newer["date"])}</a>')
     else:
         parts.append('<span></span>')
     if older:
-        parts.append(f'<a href="posts/{_esc(older["date"])}.html">旧一期 {_esc(older["date"])} →</a>')
-    return '<nav class="pager" aria-label="相邻期导航">' + "".join(parts) + '</nav>'
+        parts.append(f'<a href="posts/{_esc(older["date"])}.html">旧一页 {_esc(older["date"])} →</a>')
+    return '<nav class="pager" aria-label="前后页">' + "".join(parts) + '</nav>'
 
 
-def _tools(article_date: str) -> str:
-    md = (f'<a href="posts/{article_date}.md">下载本期纯文本</a>'
+def _tools(article_date: str, site_title: str = "两仪") -> str:
+    md = (f'<a href="posts/{article_date}.md">纯文本版</a>'
           if article_date else "")
     return (
-        '<footer><div>数据来源 '
-        '<a href="https://github.com/search?type=repositories" target="_blank" '
-        'rel="noopener">GitHub 公共接口</a>'
-        ' · 每日自动生成</div>'
-        f'<div class="tools">{md}<a href="feed.json">数据源（JSON）</a></div></footer>'
+        '<footer>'
+        f'<div>{_esc(site_title)}　·　每日一页</div>'
+        f'<div class="tools">{md}</div></footer>'
     )
 
 
 def _stats(items: list, config, now: str, issue_no: int) -> str:
-    total = sum(r.get("stargazers_count", 0) for r, _ in items)
-    cat_count = len(getattr(config, "CATEGORIES", []) or []) or 1
-    rows = [
-        ("本期项目", f"{len(items):,}", "个"),
-        ("收录分类", f"{cat_count}", "类"),
-        ("合计收藏", f"{total:,}", ""),
-        ("期号", f"{issue_no:03d}", ""),
-    ]
+    """右侧只做两栏目录，不写指标、不解释过程。"""
+    cats = getattr(config, "CATEGORIES", []) or []
+    counts = {}
+    for r, _ in items:
+        key = r.get("category") or ""
+        counts[key] = counts.get(key, 0) + 1
     body = ""
-    for k, v, u in rows:
-        unit = f'<span class="stat-u">{u}</span>' if u else ""
-        body += (f'<div class="stat"><span class="stat-k">{k}</span>'
-                 f'<span><span class="stat-v">{v}</span>{unit}</span></div>')
-    return (f'<aside class="stats" aria-label="本期数据">{body}'
-            f'<p class="stat-note">数据来自 GitHub 公共接口<br>'
-            f'按质量分轮播，不追新<br>'
-            f'更新于 {now} (UTC+{config.TZ_OFFSET_HOURS})</p></aside>')
-
-
-def _method(categories: list, per: int) -> str:
-    """把筛选与评分口径写在页面上，读者可以自己复核「评价好」的依据。"""
-    gates = "<br>".join(
-        f'{_esc(c["label"])}：累计收藏 &gt; {c["min_stars"]}'
-        for c in categories
-    )
-    return (
-        '<aside class="method" aria-labelledby="method-title">'
-        '<h2 id="method-title">筛选与评分口径</h2>'
-        f'<p>{_esc(scoring.FORMULA)}</p>'
-        '<dl>'
-        '<dt>收录范围</dt><dd>两个垂直分类，按主题词检索 GitHub 全时段项目库，'
-        f'每类每期 {per} 个；归类要有名称/标签/描述里的主题词证据，'
-        '不是被关键词搜到就算。</dd>'
-        '<dt>轮播方式</dt><dd>未推荐过的优先，最近 7 天出现过的排最后，'
-        '避免连续两天重复。</dd>'
-        '<dt>收录门槛</dt><dd>' + gates + '</dd>'
-        '<dt>排序方式</dt><dd>按综合质量分从高到低轮播，不按创建时间，'
-        '所以榜单里大多是长期积累的成熟项目。</dd>'
-        '<dt>关于比值</dt><dd>收藏/复制比反映关注与实际动手的比例，'
-        '不是好坏的绝对标准，采用分段档位避免极端值主导排序。</dd>'
-        '</dl>'
-        '<p>LLM 只负责把公开信息写成平实中文，不参与打分、不参与选项目。</p>'
-        '</aside>'
-    )
+    for c in cats[:2]:
+        n = counts.get(c["key"], 0)
+        unit = f'<span class="stat-u">{n} 则</span>' if n else ""
+        body += (f'<div class="stat"><span class="stat-k">'
+                 f'{_esc(c.get("display") or c["key"])}</span>'
+                 f'<span><span class="stat-v">'
+                 f'{_esc(c.get("tab") or c["label"])}</span>{unit}</span></div>')
+    return (f'<aside class="stats" aria-label="两栏">{body}'
+            f'<p class="stat-note">共 {len(items)} 则</p></aside>')
 
 
 def render_placeholder(config) -> str:
     """生成首次部署时的占位首页，避免 Pages 在首期生成前 404。"""
     os.makedirs(config.SITE_DIR, exist_ok=True)
-    site_title = getattr(config, "SITE_TITLE", "GitHub 双榜 · 金融与道术")
+    site_title = getattr(config, "SITE_TITLE", "两仪")
+    tagline = getattr(config, "SITE_TAGLINE", "")
     cats = getattr(config, "CATEGORIES", []) or []
-    per = getattr(config, "PER_CATEGORY", 3)
     page = (
-        _head(site_title)
+        _head(site_title, tagline=tagline)
         + _topbar(site_title, [], "", False, cats)
         + '<main class="shell" id="main"><div class="placeholder">'
-        + '<p class="eyebrow">双分类开源精选 · 即将上线</p>'
-        + '<h1>金融与道术，<em>各自成榜</em>。</h1>'
-        + f'<p class="lede">每天从两个垂直分类里各挑 {per} 个评价好的开源项目，'
-        + '按公开可复核的质量分轮播，不追新。'
-        + '第一次自动任务跑完后，这里会出现带评分依据的榜单。</p>'
-        + '<p><a href="https://github.com/dear202606-star/stars" '
-        + 'target="_blank" rel="noopener">先去看看项目源码</a></p>'
-        + '</div></main>' + _tools("") + '</body></html>'
+        + f'<p class="eyebrow">{_esc(site_title)}</p>'
+        + f'<h1>{_brand_head(site_title)}</h1>'
+        + f'<p class="lede">{_esc(tagline)}</p>'
+        + '<p>明日见。</p>'
+        + '</div></main>' + _tools("", site_title) + '</body></html>'
     )
     path = os.path.join(config.SITE_DIR, "index.html")
     with open(path, "w", encoding="utf-8") as f:
@@ -565,29 +520,28 @@ def render_site(history: dict, items: list, overview: str,
     posts_dir = os.path.join(site_dir, "posts")
     os.makedirs(posts_dir, exist_ok=True)
 
-    title = f"GitHub 双榜 · 金融与道术（{article_date}）"
-    site_title = getattr(config, "SITE_TITLE", "GitHub 双榜 · 金融与道术")
+    site_title = getattr(config, "SITE_TITLE", "两仪")
+    tagline = getattr(config, "SITE_TAGLINE", "一边算得清，一边算不尽。")
+    title = f"{site_title} · {article_date}"
     cats = getattr(config, "CATEGORIES", []) or []
     per = getattr(config, "PER_CATEGORY", 3)
     max_stars = max((r.get("stargazers_count", 0) for r, _ in items), default=1) or 1
     groups = scoring.group_items(items, cats) if cats else [(None, items)]
-    overview_text = overview or "本期看点整理中，直接往下看项目也行。"
     archive = _archive_block(history, article_date)
     pager = _pager(history, article_date)
     now = datetime.now(timezone(timedelta(hours=config.TZ_OFFSET_HOURS))
                        ).strftime("%Y-%m-%d %H:%M")
     issue_no = len(history.get("posts", []))
+    overview_html = (
+        f'<div class="overview"><span class="overview-label">今日一瞥</span>'
+        f'{_inline(overview)}</div>' if overview else "")
 
     hero = (
         '<section class="hero"><div class="hero-main">'
-        f'<p class="eyebrow">{article_date} · 第 {issue_no:03d} 期 · '
-        '双分类高分存量轮播</p>'
-        '<h1>金融与道术，<em>各自成榜</em>。</h1>'
-        f'<p class="lede">每天从两个垂直分类里各挑 {per} 个评价好的开源项目。'
-        '这里不追新：收录的是长期积累、维护得不错的项目，'
-        '每个判断都附上可复核的数据依据。</p>'
-        f'<div class="overview"><span class="overview-label">本期看点</span>'
-        f'{_inline(overview_text)}</div>'
+        f'<p class="eyebrow">{article_date}</p>'
+        f'<h1>{_brand_head(site_title)}</h1>'
+        f'<p class="lede">{_esc(tagline)}</p>'
+        f'{overview_html}'
         '</div>' + _stats(items, config, now, issue_no) + '</section>'
     )
 
@@ -602,10 +556,12 @@ def render_site(history: dict, items: list, overview: str,
             head = (
                 '<div class="cat-head">'
                 f'<span class="cat-idx">{ci:02d} / {len(groups):02d}</span>'
-                f'<div><h2 id="cat-{key}-title">{_esc(cat["label"])}</h2>'
-                f'<p>{_esc(cat.get("desc", ""))}</p></div>'
-                f'<span class="cat-meta">收藏 &gt; {cat.get("min_stars", 0)}'
-                f' · 本期 {len(group)} 个</span></div>'
+                f'<div><h2 id="cat-{key}-title">'
+                f'{_esc(cat.get("display") or cat["label"])}'
+                f' · {_esc(cat.get("tab") or cat["label"])}</h2>'
+                f'<p>{_esc(cat.get("note") or cat.get("desc", ""))}</p></div>'
+                f'<span class="cat-meta">{len(group)} 则</span>'
+                '</div>'
             )
             blocks.append(
                 f'<section class="cat" id="cat-{key}" '
@@ -615,26 +571,26 @@ def render_site(history: dict, items: list, overview: str,
             blocks.append(f'<section class="cat"><ol class="list">'
                           f'{"".join(cards)}</ol></section>')
     ranking = (
-        '<div class="rank-head"><h2 id="ranking-title">本期榜单</h2>'
-        '<span>两个分类 · 按质量分轮播 · 条形为收藏数相对值</span></div>'
-        + "".join(blocks) + _method(cats, per)
+        '<div class="rank-head"><h2 id="ranking-title">今日</h2>'
+        f'<span>{len(items)} 则</span></div>'
+        + "".join(blocks)
     )
     base = getattr(config, "SITE_BASE_URL", "")
     og_url = (base.rstrip("/") + "/index.html") if base else ""
 
     index_html = (
-        _head(f"{site_title} · {article_date}", "style.css", og_url)
+        _head(f"{site_title} · {article_date}", "style.css", og_url, tagline)
         + _topbar(site_title, items, article_date, False, cats)
         + f'<main class="shell" id="main">{hero}{ranking}{pager}{archive}</main>'
-        + _tools(article_date) + '</body></html>'
+        + _tools(article_date, site_title) + '</body></html>'
     )
     post_html = (
-        _head(title, "../style.css", og_url)
+        _head(title, "../style.css", og_url, tagline)
         + _topbar(site_title, items, article_date, True, cats)
         + f'<main class="shell" id="main">'
-        + '<a class="back" href="../index.html">← 返回首页</a>'
+        + '<a class="back" href="../index.html">← 回到首页</a>'
         + hero + ranking + pager + archive
-        + '</main>' + _tools(article_date) + '</body></html>'
+        + '</main>' + _tools(article_date, site_title) + '</body></html>'
     )
 
     files = {}
@@ -652,7 +608,7 @@ def render_site(history: dict, items: list, overview: str,
     with open(os.path.join(site_dir, ".nojekyll"), "w", encoding="utf-8") as f:
         f.write("")
 
-    feed = {"site": site_title, "updated_at": now,
+    feed = {"site": site_title, "tagline": tagline, "updated_at": now,
             "latest": article_date,
             "categories": [{"key": c["key"], "label": c["label"],
                             "min_stars": c.get("min_stars", 0)} for c in cats],
