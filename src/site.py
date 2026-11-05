@@ -51,8 +51,8 @@ a:hover{text-decoration-color:var(--accent)}
 .skip{position:absolute;left:-9999px;top:0;background:var(--surface);
  padding:12px 18px;z-index:60;border:1px solid var(--line-2)}
 .skip:focus{left:16px;top:16px}
-.mono,.num,.metric,.stat-v,.eyebrow,.tag,.jump,.live,.facts,.archive,.tools,
-.rank-head span,.stat-note,.pager,.cat-idx,.cat-meta,
+.mono,.num,.metric,.eyebrow,.tag,.jump,.live,.facts,.archive,.tools,
+.rank-head span,.pager,.cat-idx,.cat-meta,
 .score-total,.score-u{font-family:var(--font-m);font-variant-numeric:tabular-nums}
 
 /* 顶栏：细线 + 期数锚点 + 状态点 */
@@ -95,12 +95,11 @@ h1 em{font-style:normal;color:var(--accent)}
 .overview-label{display:block;font-family:var(--font-m);font-size:.68rem;
  letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 .stats{border-top:1px solid var(--line-2)}
-.stat{display:grid;grid-template-columns:1fr auto;align-items:baseline;
- padding:13px 0;border-bottom:1px solid var(--line)}
-.stat-k{font-size:.82rem;color:var(--muted)}
-.stat-v{font-size:clamp(1.35rem,2.2vw,1.8rem);font-weight:600;letter-spacing:-.04em}
-.stat-u{font-size:.76rem;color:var(--muted);margin-left:7px}
-.stat-note{font-size:.72rem;color:var(--muted);margin:14px 0 0;line-height:1.6}
+.stat{padding:14px 0;border-bottom:1px solid var(--line)}
+.stat-k{display:block;font-size:1.02rem;font-weight:600;letter-spacing:-.02em;
+ color:var(--ink)}
+.stat-note-line{display:block;font-size:.78rem;color:var(--muted);line-height:1.65;
+ margin-top:4px}
 
 /* 双分类分栏：每类一条粗线标题，栏内沿用细线榜单 */
 .cat{margin:clamp(36px,5vw,66px) 0 0;scroll-margin-top:84px}
@@ -469,22 +468,18 @@ def _tools(article_date: str, site_title: str = "两仪") -> str:
 
 
 def _stats(items: list, config, now: str, issue_no: int) -> str:
-    """右侧只做两栏目录，不写指标、不解释过程。"""
+    """右侧只做两栏目录：说清每栏是什么，不重复别处已有的计数与口径。"""
     cats = getattr(config, "CATEGORIES", []) or []
-    counts = {}
-    for r, _ in items:
-        key = r.get("category") or ""
-        counts[key] = counts.get(key, 0) + 1
     body = ""
     for c in cats[:2]:
-        n = counts.get(c["key"], 0)
-        unit = f'<span class="stat-u">{n} 则</span>' if n else ""
-        body += (f'<div class="stat"><span class="stat-k">'
-                 f'{_esc(c.get("display") or c["key"])}</span>'
-                 f'<span><span class="stat-v">'
-                 f'{_esc(c.get("tab") or c["label"])}</span>{unit}</span></div>')
-    return (f'<aside class="stats" aria-label="两栏">{body}'
-            f'<p class="stat-note">共 {len(items)} 则</p></aside>')
+        body += (
+            '<div class="stat">'
+            f'<span class="stat-k">{_esc(c.get("display") or c["key"])}'
+            f' · {_esc(c.get("tab") or c["label"])}</span>'
+            f'<span class="stat-note-line">'
+            f'{_esc(c.get("note") or c.get("desc", ""))}</span>'
+            '</div>')
+    return f'<aside class="stats" aria-label="两栏">{body}</aside>'
 
 
 def render_placeholder(config) -> str:
@@ -611,7 +606,7 @@ def render_site(history: dict, items: list, overview: str,
     feed = {"site": site_title, "tagline": tagline, "updated_at": now,
             "latest": article_date,
             "categories": [{"key": c["key"], "label": c["label"],
-                            "min_stars": c.get("min_stars", 0)} for c in cats],
+                            "display": c.get("display", "")} for c in cats],
             "per_category": per,
             "posts": history.get("posts", [])}
     with open(os.path.join(site_dir, "feed.json"), "w", encoding="utf-8") as f:
