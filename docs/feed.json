@@ -1,12 +1,12 @@
 {
   "site": "GitHub 新晋热门速览",
-  "updated_at": "2026-11-05 21:28",
+  "updated_at": "2026-11-05 21:49",
   "latest": "2026-11-05",
   "posts": [
     {
       "date": "2026-11-05",
-      "title": "GitHub 本周新晋热门 Top3（2026-11-05）",
-      "count": 3,
+      "title": "GitHub 本周新晋热门 Top10（2026-11-05）",
+      "count": 10,
       "md": "posts/2026-11-05.md",
       "html": "posts/2026-11-05.html"
     }

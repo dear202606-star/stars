@@ -17,13 +17,73 @@
       "language": "JavaScript",
       "first_seen": "2026-11-05",
       "updated_at": "2026-11-05T21:28:14.251607+08:00"
+    },
+    "KKKKhazix/agent-autoloop": {
+      "stars": 3079,
+      "language": "TypeScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "Verlintas/NOIR": {
+      "stars": 2367,
+      "language": "Kotlin",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "elvarofficial/teardown": {
+      "stars": 2065,
+      "language": "JavaScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "caru-ini/stack-diagram": {
+      "stars": 1828,
+      "language": "TypeScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "govijr/terminal-mac": {
+      "stars": 1804,
+      "language": "Swift",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto": {
+      "stars": 1704,
+      "language": "Python",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "mromidev/claude-animated-shorts": {
+      "stars": 1640,
+      "language": "TypeScript",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "Arjun-Ingole/hop": {
+      "stars": 1518,
+      "language": "PowerShell",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "zortos293/Lichii": {
+      "stars": 1472,
+      "language": "C++",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
+    },
+    "kevinraymond/florilegium": {
+      "stars": 1435,
+      "language": "TeX",
+      "first_seen": "2026-11-05",
+      "updated_at": "2026-11-05T21:49:54.108049+08:00"
     }
   },
   "posts": [
     {
       "date": "2026-11-05",
-      "title": "GitHub 本周新晋热门 Top3（2026-11-05）",
-      "count": 3,
+      "title": "GitHub 本周新晋热门 Top10（2026-11-05）",
+      "count": 10,
       "md": "posts/2026-11-05.md",
       "html": "posts/2026-11-05.html"
     }
@@ -31,10 +91,10 @@
   "day_selection": {
     "2026-11-05": [
       {
-        "full_name": "deepseek-ai/dsh-superagent-prototype",
-        "html_url": "https://github.com/deepseek-ai/dsh-superagent-prototype",
-        "stargazers_count": 19225,
-        "forks_count": 2186,
+        "full_name": "KKKKhazix/agent-autoloop",
+        "html_url": "https://github.com/KKKKhazix/agent-autoloop",
+        "stargazers_count": 3079,
+        "forks_count": 581,
         "language": "TypeScript",
         "license": {
           "key": "mit",
@@ -43,39 +103,92 @@
           "url": "https://api.github.com/licenses/mit",
           "node_id": "MDc6TGljZW5zZTEz"
         },
-        "topics": [],
-        "description": "Towards a More Autonomous Agent System",
-        "created_at": "2026-10-31T09:32:46Z",
-        "pushed_at": "2026-11-03T09:29:14Z",
-        "open_issues_count": 0,
-        "id": 1440705679
+        "topics": [
+          "ai-agents",
+          "automation",
+          "claude-code",
+          "cli",
+          "codex",
+          "event-driven",
+          "mcp",
+          "nodejs",
+          "self-hosted",
+          "typescript",
+          "workflow"
+        ],
+        "description": "让你的命令行 Agent 在后台自己接活、自己跟进到底；平时不烦你，遇到拿不准的事才发卡片找你拍板。",
+        "created_at": "2026-11-03T08:02:11Z",
+        "pushed_at": "2026-11-05T12:39:59Z",
+        "open_issues_count": 3,
+        "id": 1443985070
       },
       {
-        "full_name": "storytold/craft-anything",
-        "html_url": "https://github.com/storytold/craft-anything",
-        "stargazers_count": 13944,
-        "forks_count": 2365,
-        "language": "Rust",
+        "full_name": "Verlintas/NOIR",
+        "html_url": "https://github.com/Verlintas/NOIR",
+        "stargazers_count": 2367,
+        "forks_count": 213,
+        "language": "Kotlin",
         "license": {
-          "key": "apache-2.0",
-          "name": "Apache License 2.0",
-          "spdx_id": "Apache-2.0",
-          "url": "https://api.github.com/licenses/apache-2.0",
-          "node_id": "MDc6TGljZW5zZTI="
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "adb",
+          "android",
+          "android-privacy",
+          "android-security",
+          "android-tools",
+          "apk-analysis",
+          "bloatware",
+          "cli",
+          "cross-platform",
+          "debloat",
+          "jadx",
+          "kotlin",
+          "kotlin-multiplatform",
+          "privacy",
+          "privacy-tools",
+          "security-audit",
+          "static-analysis",
+          "telemetry",
+          "terminal-ui",
+          "tui"
+        ],
+        "description": "手机隐私审计：用 adb 扫出 Android 应用的权限、上报端点与数据流向，并给出可回滚的处置。Desktop Android leak audit: permissions, endpoints, data flows, reversible fixes.",
+        "created_at": "2026-10-31T21:34:39Z",
+        "pushed_at": "2026-11-05T09:57:51Z",
+        "open_issues_count": 0,
+        "id": 1441272552
+      },
+      {
+        "full_name": "elvarofficial/teardown",
+        "html_url": "https://github.com/elvarofficial/teardown",
+        "stargazers_count": 2065,
+        "forks_count": 321,
+        "language": "JavaScript",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
         },
         "topics": [],
-        "description": "Craft Anything: understand how any software works, and craft your own.",
-        "created_at": "2026-10-31T14:50:00Z",
-        "pushed_at": "2026-11-04T22:45:59Z",
-        "open_issues_count": 254,
-        "id": 1440956372
+        "description": "A Claude Code skill that turns any machine into a 3D simulator you can take apart",
+        "created_at": "2026-10-30T09:29:01Z",
+        "pushed_at": "2026-10-31T14:01:06Z",
+        "open_issues_count": 9,
+        "id": 1439522537
       },
       {
-        "full_name": "patch-gg/pixelfx",
-        "html_url": "https://github.com/patch-gg/pixelfx",
-        "stargazers_count": 5109,
-        "forks_count": 679,
-        "language": "JavaScript",
+        "full_name": "caru-ini/stack-diagram",
+        "html_url": "https://github.com/caru-ini/stack-diagram",
+        "stargazers_count": 1828,
+        "forks_count": 86,
+        "language": "TypeScript",
         "license": {
           "key": "mit",
           "name": "MIT License",
@@ -85,19 +198,151 @@
         },
         "topics": [
           "agent-skills",
-          "animation",
-          "canvas",
-          "claude-code-plugin",
-          "gamedev",
-          "pixel-art",
-          "sprite-sheet",
-          "vfx"
+          "architecture-diagram",
+          "claude-code",
+          "claude-skills",
+          "codex",
+          "diagram",
+          "system-architecture",
+          "tech-stack"
         ],
-        "description": "244 pixel art effects, every one a small piece of code. Plus a Claude Code skill to make your own.",
-        "created_at": "2026-10-30T06:43:25Z",
-        "pushed_at": "2026-10-31T08:44:14Z",
-        "open_issues_count": 8,
-        "id": 1439372976
+        "description": "Agent skill: describe your stack in a sentence, get an architecture diagram with official logos",
+        "created_at": "2026-11-01T05:35:12Z",
+        "pushed_at": "2026-11-03T03:42:46Z",
+        "open_issues_count": 0,
+        "id": 1441517767
+      },
+      {
+        "full_name": "govijr/terminal-mac",
+        "html_url": "https://github.com/govijr/terminal-mac",
+        "stargazers_count": 1804,
+        "forks_count": 110,
+        "language": "Swift",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "cli",
+          "gui",
+          "macos",
+          "shell",
+          "swift",
+          "terminal",
+          "tui"
+        ],
+        "description": "Entire MacOS running in your terminal.",
+        "created_at": "2026-11-03T03:22:56Z",
+        "pushed_at": "2026-11-05T12:21:59Z",
+        "open_issues_count": 3,
+        "id": 1443759946
+      },
+      {
+        "full_name": "worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto",
+        "html_url": "https://github.com/worldonlyu/Google_AI_Pro_2Year_ZeroCost_Auto",
+        "stargazers_count": 1704,
+        "forks_count": 798,
+        "language": "Python",
+        "license": null,
+        "topics": [],
+        "description": "Google_AI_Pro_2Year_ZeroCost_Auto",
+        "created_at": "2026-11-04T14:54:56Z",
+        "pushed_at": "2026-11-04T14:57:03Z",
+        "open_issues_count": 14,
+        "id": 1445802355
+      },
+      {
+        "full_name": "mromidev/claude-animated-shorts",
+        "html_url": "https://github.com/mromidev/claude-animated-shorts",
+        "stargazers_count": 1640,
+        "forks_count": 368,
+        "language": "TypeScript",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [],
+        "description": "Free Claude skill: viral animated story shorts (2D characters in a 3D world) with three.js + Remotion",
+        "created_at": "2026-11-01T05:50:38Z",
+        "pushed_at": "2026-11-01T05:57:14Z",
+        "open_issues_count": 5,
+        "id": 1441526188
+      },
+      {
+        "full_name": "Arjun-Ingole/hop",
+        "html_url": "https://github.com/Arjun-Ingole/hop",
+        "stargazers_count": 1518,
+        "forks_count": 53,
+        "language": "PowerShell",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [],
+        "description": "Install Linux next to Windows without a USB stick",
+        "created_at": "2026-10-30T19:40:45Z",
+        "pushed_at": "2026-11-03T01:08:16Z",
+        "open_issues_count": 9,
+        "id": 1440160468
+      },
+      {
+        "full_name": "zortos293/Lichii",
+        "html_url": "https://github.com/zortos293/Lichii",
+        "stargazers_count": 1472,
+        "forks_count": 196,
+        "language": "C++",
+        "license": {
+          "key": "gpl-3.0",
+          "name": "GNU General Public License v3.0",
+          "spdx_id": "GPL-3.0",
+          "url": "https://api.github.com/licenses/gpl-3.0",
+          "node_id": "MDc6TGljZW5zZTk="
+        },
+        "topics": [],
+        "description": "VERY experimental Nintendo Switch 2 emulator",
+        "created_at": "2026-10-31T14:17:26Z",
+        "pushed_at": "2026-11-05T13:44:08Z",
+        "open_issues_count": 42,
+        "id": 1440927503
+      },
+      {
+        "full_name": "kevinraymond/florilegium",
+        "html_url": "https://github.com/kevinraymond/florilegium",
+        "stargazers_count": 1435,
+        "forks_count": 40,
+        "language": "TeX",
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit",
+          "node_id": "MDc6TGljZW5zZTEz"
+        },
+        "topics": [
+          "generative-art",
+          "latex",
+          "latex-package",
+          "lua",
+          "lualatex",
+          "postscript",
+          "procedural-generation",
+          "svg",
+          "typography"
+        ],
+        "description": "Procedurally generated Delft-blue floral page margins for LuaLaTeX, drawn in Lua",
+        "created_at": "2026-10-30T07:49:05Z",
+        "pushed_at": "2026-11-04T15:21:22Z",
+        "open_issues_count": 1,
+        "id": 1439430391
       }
     ]
   }
