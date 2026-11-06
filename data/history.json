@@ -145,7 +145,7 @@
       "category": "finance",
       "quality_score": 94.0,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     },
     "freqtrade/freqtrade": {
       "stars": 56500,
@@ -153,7 +153,7 @@
       "category": "finance",
       "quality_score": 94.0,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     },
     "ccxt/ccxt": {
       "stars": 44756,
@@ -161,7 +161,7 @@
       "category": "finance",
       "quality_score": 94.0,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     },
     "jangviktor-web/nihaixia": {
       "stars": 4007,
@@ -169,7 +169,7 @@
       "category": "daoshu",
       "quality_score": 85.5,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     },
     "6tail/lunar-java": {
       "stars": 981,
@@ -177,7 +177,7 @@
       "category": "daoshu",
       "quality_score": 83.9,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     },
     "hhszzzz/taibu": {
       "stars": 740,
@@ -185,7 +185,7 @@
       "category": "daoshu",
       "quality_score": 82.7,
       "first_seen": "2026-11-06",
-      "updated_at": "2026-11-06T07:20:43.191860+08:00"
+      "updated_at": "2026-11-06T15:52:51.991622+08:00"
     }
   },
   "posts": [
